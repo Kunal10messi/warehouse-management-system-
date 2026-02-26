@@ -1,0 +1,9 @@
+The Hardware Asset Allocation & Tracking System is a full-stack web application designed to manage the lifecycle of organizational IT assets through structured workflows and role-based access control. The system was developed using Django (Python) with a relational database backend to ensure data consistency and transactional integrity.
+
+The application implements normalized data models for Users, Devices, Device Requests, and Assignments, maintaining referential integrity through foreign key relationships. A service-layer architecture was introduced to encapsulate business logic such as approval workflows, device allocation, return handling, and fine calculation for overdue assets.
+
+Employees can request available devices, while administrators manage approvals, rejections, and inventory oversight through a dedicated dashboard. The system enforces state synchronization by dynamically updating device availability upon assignment and return, preventing duplicate allocations and resolving potential race conditions. Database-level constraints and validation checks were applied to maintain consistency and avoid conflicting records.
+
+Advanced filtering and search functionality was implemented for device management, enabling administrators to query assets based on type, status, and identifiers. The return workflow includes automated fine computation based on date comparison logic, ensuring accountability and accurate tracking of overdue assets.
+
+The project emphasizes backend architecture design, model relationships, migration management, and error handling. Circular dependency issues were resolved through modular service functions and lazy imports. The system demonstrates practical implementation of role-based authorization, CRUD operations, transactional updates, and workflow automation within a structured MVC framework.

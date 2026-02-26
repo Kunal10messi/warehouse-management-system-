@@ -1,0 +1,45 @@
+{% extends 'base.html' %}
+{% block content %}
+
+<h3>Request a Device</h3>
+
+<form method="get" class="mb-3">
+    <label>Select Device Category</label>
+    <select name="type" class="form-control" onchange="this.form.submit()">
+        <option value="">-- Select Category --</option>
+        {% for t in device_types %}
+            <option value="{{ t }}" {% if t == selected_type %}selected{% endif %}>
+                {{ t }}
+            </option>
+        {% endfor %}
+    </select>
+</form>
+
+<form method="post">
+    {% csrf_token %}
+
+    <div class="mb-3">
+        <label>Select Device</label>
+        <select name="device" class="form-control" required>
+            {% for d in devices %}
+                <option value="{{ d.id }}">
+                    {{ d.serial_number }} ({{ d.location }})
+                </option>
+            {% endfor %}
+        </select>
+    </div>
+
+    <div class="mb-3">
+        <label>From Date</label>
+        <input type="date" name="from_date" class="form-control" required>
+    </div>
+
+    <div class="mb-3">
+        <label>To Date</label>
+        <input type="date" name="to_date" class="form-control" required>
+    </div>
+
+    <button type="submit" class="btn btn-primary">Submit Request</button>
+</form>
+
+{% endblock %}

@@ -1,0 +1,102 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<h2>Admin Dashboard</h2>
+
+<a href="/admin-panel/devices/" class="btn btn-primary mb-3">Manage Devices</a>
+<a href="/admin-panel/users/" class="btn btn-secondary mb-3">Manage Employees</a>
+
+
+<div class="row mb-4">
+    <div class="col-md-3">
+        <div class="card text-bg-primary mb-3">
+            <div class="card-body">
+                <h5 class="card-title">Total Devices</h5>
+                <p class="card-text fs-4">{{ total_devices }}</p>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-3">
+        <div class="card text-bg-success mb-3">
+            <div class="card-body">
+                <h5 class="card-title">Available</h5>
+                <p class="card-text fs-4">{{ available_devices }}</p>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-3">
+        <div class="card text-bg-warning mb-3">
+            <div class="card-body">
+                <h5 class="card-title">Assigned</h5>
+                <p class="card-text fs-4">{{ assigned_devices }}</p>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-3">
+        <div class="card text-bg-danger mb-3">
+            <div class="card-body">
+                <h5 class="card-title">Overdue</h5>
+                <p class="card-text fs-4">{{ overdue_assignments.count }}</p>
+            </div>
+        </div>
+    </div>
+</div>
+
+<h4>Pending Device Requests</h4>
+<table class="table table-bordered">
+    <thead class="table-dark">
+        <tr>
+            <th>Employee</th>
+            <th>Device</th>
+            <th>From</th>
+            <th>To</th>
+            <th>Action</th>
+        </tr>
+    </thead>
+    <tbody>
+        {% for r in pending_requests %}
+        <tr>
+            <td>{{ r.user.username }}</td>
+            <td>{{ r.device.serial_number }}</td>
+            <td>{{ r.from_date }}</td>
+            <td>{{ r.to_date }}</td>
+            <td>
+                <a href="/admin-panel/approve/{{ r.id }}/" class="btn btn-success btn-sm">Approve</a>
+                <a href="/admin-panel/reject/{{ r.id }}/" class="btn btn-danger btn-sm">Reject</a>
+            </td>
+        </tr>
+        {% empty %}
+        <tr>
+            <td colspan="5" class="text-center">No pending requests</td>
+        </tr>
+        {% endfor %}
+    </tbody>
+</table>
+
+<h4 class="mt-4">Overdue Devices</h4>
+<table class="table table-bordered">
+    <thead class="table-dark">
+        <tr>
+            <th>Employee</th>
+            <th>Device</th>
+            <th>Expected Return</th>
+            <th>Days Late</th>
+        </tr>
+    </thead>
+    <tbody>
+        {% for a in overdue_assignments %}
+        <tr>
+            <td>{{ a.user.username }}</td>
+            <td>{{ a.device.serial_number }}</td>
+            <td>{{ a.expected_return_date }}</td>
+            <td>{{ a.expected_return_date|timesince }}</td>
+        </tr>
+        {% empty %}
+        <tr>
+            <td colspan="4" class="text-center">No overdue devices</td>
+        </tr>
+        {% endfor %}
+    </tbody>
+</table>
+
+{% endblock %}

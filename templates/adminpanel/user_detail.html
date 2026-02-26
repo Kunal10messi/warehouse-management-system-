@@ -1,0 +1,58 @@
+{% extends 'base.html' %}
+{% block content %}
+
+<h3>Employee Profile: {{ emp.username }}</h3>
+
+<p><strong>Email:</strong> {{ emp.email }}</p>
+<p><strong>Total Fine:</strong> ₹{{ total_fine }}</p>
+
+<h5>Active Assignments</h5>
+<table class="table table-bordered">
+    <thead class="table-dark">
+        <tr>
+            <th>Device</th>
+            <th>Serial</th>
+            <th>Issued On</th>
+            <th>Expected Return</th>
+        </tr>
+    </thead>
+    <tbody>
+        {% for a in active_assignments %}
+        <tr>
+            <td>{{ a.device.device_type }}</td>
+            <td>{{ a.device.serial_number }}</td>
+            <td>{{ a.issue_date }}</td>
+            <td>{{ a.expected_return_date }}</td>
+        </tr>
+        {% empty %}
+        <tr><td colspan="4">No active devices</td></tr>
+        {% endfor %}
+    </tbody>
+</table>
+
+<h5>All Assignment History</h5>
+<table class="table table-bordered">
+    <thead class="table-dark">
+        <tr>
+            <th>Device</th>
+            <th>Serial</th>
+            <th>Issued</th>
+            <th>Returned</th>
+            <th>Fine</th>
+        </tr>
+    </thead>
+    <tbody>
+        {% for a in assignments %}
+        <tr>
+            <td>{{ a.device.device_type }}</td>
+            <td>{{ a.device.serial_number }}</td>
+            <td>{{ a.issue_date }}</td>
+            <td>{{ a.actual_return_date|default:"Not Returned" }}</td>
+            <td>{{ a.fine_amount|default:0 }}</td>
+
+        </tr>
+        {% endfor %}
+    </tbody>
+</table>
+
+{% endblock %}

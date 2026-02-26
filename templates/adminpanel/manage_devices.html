@@ -1,0 +1,63 @@
+{% extends 'base.html' %}
+{% block content %}
+
+<h3>Manage Devices</h3>
+
+<form method="get" class="row mb-3">
+    <div class="col-md-3">
+        <select name="type" class="form-control">
+            <option value="">All Types</option>
+            {% for t in device_types %}
+                <option value="{{ t }}" {% if t == selected_type %}selected{% endif %}>{{ t }}</option>
+            {% endfor %}
+        </select>
+    </div>
+
+    <div class="col-md-3">
+        <select name="status" class="form-control">
+            <option value="">All Status</option>
+            {% for s in statuses %}
+                <option value="{{ s }}" {% if s == selected_status %}selected{% endif %}>{{ s }}</option>
+            {% endfor %}
+        </select>
+    </div>
+
+    <div class="col-md-4">
+        <input type="text" name="search" class="form-control"
+               placeholder="Search by Serial Number" value="{{ search|default:'' }}">
+    </div>
+
+    <div class="col-md-2">
+        <button class="btn btn-primary w-100">Filter</button>
+    </div>
+</form>
+
+<a href="/admin-panel/devices/add/" class="btn btn-success mb-2">Add Device</a>
+
+<table class="table table-bordered">
+    <thead class="table-dark">
+        <tr>
+            <th>Serial</th><th>Type</th><th>Brand</th><th>Model</th>
+            <th>Config</th><th>Location</th><th>Status</th><th>Actions</th>
+        </tr>
+    </thead>
+    <tbody>
+        {% for d in devices %}
+        <tr>
+            <td>{{ d.serial_number }}</td>
+            <td>{{ d.device_type }}</td>
+            <td>{{ d.brand }}</td>
+            <td>{{ d.model }}</td>
+            <td>{{ d.configuration }}</td>
+            <td>{{ d.location }}</td>
+            <td>{{ d.status }}</td>
+            <td>
+                <a href="/admin-panel/devices/edit/{{ d.id }}/" class="btn btn-warning btn-sm">Edit</a>
+                <a href="/admin-panel/devices/delete/{{ d.id }}/" class="btn btn-danger btn-sm">Delete</a>
+            </td>
+        </tr>
+        {% endfor %}
+    </tbody>
+</table>
+
+{% endblock %}

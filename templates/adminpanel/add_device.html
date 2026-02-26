@@ -1,0 +1,16 @@
+{% extends 'base.html' %}
+{% block content %}
+
+<h3>Add Device</h3>
+<form method="post">{% csrf_token %}
+    <input name="serial_number" placeholder="Serial" class="form-control mb-2">
+    <input name="device_type" placeholder="GPU/CPU/RAM" class="form-control mb-2">
+    <input name="brand" placeholder="Brand" class="form-control mb-2">
+    <input name="model" placeholder="Model" class="form-control mb-2">
+    <input name="configuration" placeholder="Config" class="form-control mb-2">
+    <input name="location" placeholder="Location" class="form-control mb-2">
+    <input name="status" placeholder="AVAILABLE" class="form-control mb-2">
+    <button class="btn btn-success">Save</button>
+</form>
+
+{% endblock %}

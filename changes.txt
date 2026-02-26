@@ -1,0 +1,1 @@
+when i go to http://127.0.0.1:8000/allocations/request/ or any other url withoutout logging in, it throws and error. It should re-direct me to login page

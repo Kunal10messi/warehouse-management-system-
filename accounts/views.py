@@ -12,3 +12,10 @@ def dashboard(request):
         return redirect('/admin-panel/')
     else:
         return render(request, 'employee/dashboard.html')
+    
+def root_redirect(request):
+    if request.user.is_authenticated:
+        if request.user.role == 'ADMIN':
+            return redirect('admin_dashboard')
+        return redirect('employee_dashboard')
+    return redirect('login')

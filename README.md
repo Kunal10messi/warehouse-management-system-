@@ -98,7 +98,7 @@ All required packages are listed in requirements.txt.
     python manage.py seed_data
 
     Default Admin Credentials: Username: admin, Password: 0728
-    Default Employee Credentials: Username: emp(1,2,3), Password: 0728
+    Default Employee Credentials: Username: emp(1,2), Password: 0728
 
 
 7)  Run Development Server

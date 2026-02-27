@@ -18,6 +18,7 @@ class Command(BaseCommand):
                 username="admin",
                 email="admin@gmail.com",
                 password="0728"
+                role='ADMIN',
             )
             self.stdout.write(self.style.SUCCESS("Superuser created."))
         else:

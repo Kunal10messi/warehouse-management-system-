@@ -72,7 +72,7 @@ All required packages are listed in requirements.txt.
 1)  Clone Repository
 
     git clone
-    https://github.com/yourusername/warehouse-management-system.git cd
+    https://github.com/Kunal10messi/warehouse-management-system-.git cd
     warehouse-management-system
 
 2)  Create Virtual Environment
@@ -81,9 +81,9 @@ All required packages are listed in requirements.txt.
 
 3)  Activate Virtual Environment
 
-    Windows: venv
+    Windows: venv/Scripts/activate
 
-    Mac/Linux: source venv/bin/activate
+    Mac/Linux: venv/bin/activate
 
 4)  Install Dependencies
 
@@ -97,7 +97,9 @@ All required packages are listed in requirements.txt.
 
     python manage.py seed_data
 
-    Default Admin Credentials: Username: admin Password: admin123
+    Default Admin Credentials: Username: admin, Password: 0728
+    Default Employee Credentials: Username: emp(1,2,3), Password: 0728
+
 
 7)  Run Development Server
 

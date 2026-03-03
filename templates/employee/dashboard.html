@@ -1,11 +1,42 @@
 {% extends 'base.html' %}
-
 {% block content %}
-<h3>Employee Dashboard</h3>
 
-<div class="list-group">
-    <a href="/inventory/available/" class="list-group-item">View Available Devices</a>
-    <a href="/allocations/my-devices/" class="list-group-item">My Assigned Devices</a>
-    <a href="/allocations/request/" class="list-group-item">Request a Device</a>
+<div class="card">
+    <h2>Employee Dashboard</h2>
+
+    <table class="table">
+        <tr>
+            <th>Action</th>
+            <th>Description</th>
+        </tr>
+
+        <tr>
+            <td>
+                <a href="/inventory/available/" class="btn btn-primary">
+                    View Available Devices
+                </a>
+            </td>
+            <td>Browse all available devices in inventory.</td>
+        </tr>
+
+        <tr>
+            <td>
+                <a href="/allocations/my-devices/" class="btn btn-secondary">
+                    My Assigned Devices
+                </a>
+            </td>
+            <td>View devices currently assigned to you.</td>
+        </tr>
+
+        <tr>
+            <td>
+                <a href="/allocations/request/" class="btn btn-success">
+                    Request a Device
+                </a>
+            </td>
+            <td>Submit a request for a device.</td>
+        </tr>
+    </table>
 </div>
+
 {% endblock %}

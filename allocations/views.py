@@ -6,28 +6,6 @@ from datetime import date
 from .models import Assignment
 from .services import return_device
 
-@login_required
-def request_device(request):
-    devices = Device.objects.filter(status='AVAILABLE')
-
-    if request.method == 'POST':
-        device_id = request.POST['device']
-        from_date = request.POST['from_date']
-        to_date = request.POST['to_date']
-
-        device = Device.objects.get(id=device_id)
-
-        DeviceRequest.objects.create(
-            user=request.user,
-            device=device,
-            from_date=from_date,
-            to_date=to_date
-        )
-
-        return redirect('/')
-
-    return render(request, 'allocations/request_device.html', {'devices': devices})
-
 
 @login_required
 def my_devices(request):

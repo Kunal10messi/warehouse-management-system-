@@ -7,10 +7,11 @@ from allocations.models import DeviceRequest, Assignment
 from allocations.services import approve_request
 from inventory.models import Device
 from .forms import EmployeeCreateForm
+from .decorators import admin_required
 
 User = get_user_model()
 
-@login_required
+@admin_required
 def admin_dashboard(request):
     pending_requests = DeviceRequest.objects.filter(status='PENDING')
     total_devices = Device.objects.count()
@@ -31,20 +32,20 @@ def admin_dashboard(request):
 
     return render(request, 'adminpanel/dashboard.html', context)
 
-@login_required
+@admin_required
 def approve_request_view(request, request_id):
     req = get_object_or_404(DeviceRequest, id=request_id, status='PENDING')
     approve_request(req)
     return redirect('/admin-panel/')
 
-@login_required
+@admin_required
 def reject_request_view(request, request_id):
     req = get_object_or_404(DeviceRequest, id=request_id, status='PENDING')
     req.status = 'REJECTED'
     req.save()
     return redirect('/admin-panel/')
 
-@login_required
+@admin_required
 def manage_devices(request):
     devices = Device.objects.all()
 
@@ -74,7 +75,7 @@ def manage_devices(request):
     })
 
 
-@login_required
+@admin_required
 def add_device(request):
     if request.method == 'POST':
         Device.objects.create(
@@ -89,7 +90,7 @@ def add_device(request):
         return redirect('/admin-panel/devices/')
     return render(request, 'adminpanel/add_device.html')
 
-@login_required
+@admin_required
 def edit_device(request, device_id):
     device = get_object_or_404(Device, id=device_id)
     if request.method == 'POST':
@@ -104,19 +105,19 @@ def edit_device(request, device_id):
         return redirect('/admin-panel/devices/')
     return render(request, 'adminpanel/edit_device.html', {'device': device})
 
-@login_required
+@admin_required
 def delete_device(request, device_id):
     device = get_object_or_404(Device, id=device_id)
     device.delete()
     return redirect('/admin-panel/devices/')
 
-@login_required
+@admin_required
 def user_list(request):
     users = User.objects.filter(role='EMPLOYEE')
     return render(request, 'adminpanel/users.html', {'users': users})
 
 
-@login_required
+@admin_required
 def user_detail(request, user_id):
     user = User.objects.get(id=user_id)
     assignments = Assignment.objects.filter(user=user)
@@ -130,7 +131,7 @@ def user_detail(request, user_id):
         'total_fine': total_fine
     })
 
-@login_required
+@admin_required
 def add_employee(request):
     if request.method == "POST":
         form = EmployeeCreateForm(request.POST)

@@ -2,40 +2,57 @@ from django.contrib.auth.decorators import login_required
 from django.shortcuts import render, redirect, get_object_or_404
 from django.contrib.auth import get_user_model
 from datetime import date
-
 from allocations.models import DeviceRequest, Assignment
 from allocations.services import approve_request
 from inventory.models import Device
 from .forms import EmployeeCreateForm
+from .forms import DeviceForm
 from .decorators import admin_required
+from django.contrib import messages
 
 User = get_user_model()
 
 @admin_required
 def admin_dashboard(request):
     pending_requests = DeviceRequest.objects.filter(status='PENDING')
+    
     total_devices = Device.objects.count()
     available_devices = Device.objects.filter(status='AVAILABLE').count()
     assigned_devices = Device.objects.filter(status='ASSIGNED').count()
+    
     overdue_assignments = Assignment.objects.filter(
         actual_return_date__isnull=True,
         expected_return_date__lt=date.today()
     )
+    
+    active_assignments = Assignment.objects.filter(
+        actual_return_date__isnull=True
+    ).select_related("device", "user").order_by("expected_return_date")
 
     context = {
         'pending_requests': pending_requests,
         'total_devices': total_devices,
         'available_devices': available_devices,
         'assigned_devices': assigned_devices,
-        'overdue_assignments': overdue_assignments
+        'overdue_assignments': overdue_assignments,
+        'active_assignments': active_assignments,
+        "today": date.today()
     }
 
     return render(request, 'adminpanel/dashboard.html', context)
 
 @admin_required
 def approve_request_view(request, request_id):
+
     req = get_object_or_404(DeviceRequest, id=request_id, status='PENDING')
-    approve_request(req)
+
+    try:
+        approve_request(req)
+        messages.success(request, "Device request approved.")
+
+    except ValueError as e:
+        messages.error(request, str(e))
+
     return redirect('/admin-panel/')
 
 @admin_required
@@ -77,18 +94,17 @@ def manage_devices(request):
 
 @admin_required
 def add_device(request):
-    if request.method == 'POST':
-        Device.objects.create(
-            serial_number=request.POST['serial_number'],
-            device_type=request.POST['device_type'],
-            brand=request.POST['brand'],
-            model=request.POST['model'],
-            configuration=request.POST['configuration'],
-            location=request.POST['location'],
-            status=request.POST['status'],
-        )
-        return redirect('/admin-panel/devices/')
-    return render(request, 'adminpanel/add_device.html')
+    if request.method == "POST":
+        form = DeviceForm(request.POST)
+
+        if form.is_valid():
+            form.save()
+            return redirect('/admin-panel/devices/')
+    else:
+        form = DeviceForm()
+
+    return render(request, "adminpanel/add_device.html", {"form": form})
+
 
 @admin_required
 def edit_device(request, device_id):

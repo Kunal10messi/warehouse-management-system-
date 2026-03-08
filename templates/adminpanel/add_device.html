@@ -1,16 +1,51 @@
 {% extends 'base.html' %}
 {% block content %}
 
-<h3>Add Device</h3>
-<form method="post">{% csrf_token %}
-    <input name="serial_number" placeholder="Serial" class="form-control mb-2">
-    <input name="device_type" placeholder="GPU/CPU/RAM" class="form-control mb-2">
-    <input name="brand" placeholder="Brand" class="form-control mb-2">
-    <input name="model" placeholder="Model" class="form-control mb-2">
-    <input name="configuration" placeholder="Config" class="form-control mb-2">
-    <input name="location" placeholder="Location" class="form-control mb-2">
-    <input name="status" placeholder="AVAILABLE" class="form-control mb-2">
-    <button class="btn btn-success">Save</button>
-</form>
+<div class="card">
+    <h2>Add Device</h2>
+
+    <form method="post">
+        {% csrf_token %}
+
+        <div class="mb-3">
+            <label class="form-label">Serial Number</label>
+            {{ form.serial_number }}
+        </div>
+
+        <div class="mb-3">
+            <label class="form-label">Device Type</label>
+            {{ form.device_type }}
+        </div>
+
+        <div class="mb-3">
+            <label class="form-label">Brand</label>
+            {{ form.brand }}
+        </div>
+
+        <div class="mb-3">
+            <label class="form-label">Model</label>
+            {{ form.model }}
+        </div>
+
+        <div class="mb-3">
+            <label class="form-label">Configuration</label>
+            {{ form.configuration }}
+        </div>
+
+        <div class="mb-3">
+            <label class="form-label">Location</label>
+            {{ form.location }}
+        </div>
+
+        <div class="mb-3">
+            <label class="form-label">Status</label>
+            {{ form.status }}
+        </div>
+
+        <button type="submit" class="btn btn-primary">Add Device</button>
+
+    </form>
+</div>
+
 
 {% endblock %}

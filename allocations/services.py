@@ -1,14 +1,22 @@
 from datetime import date
 from decimal import Decimal
 
-FINE_PER_DAY = Decimal('50.00')  # ₹50 per day late
+FINE_PER_DAY = Decimal('50.00')  
 
 
 def approve_request(device_request):
-    from .models import Assignment  # import here to avoid circular import
+    from .models import Assignment  
 
     device = device_request.device
     user = device_request.user
+
+    existing_assignment = Assignment.objects.filter(
+        device=device,
+        actual_return_date__isnull=True
+    ).exists()
+    
+    if existing_assignment:
+        raise ValueError("Device is already assigned to another user.")
 
     assignment = Assignment.objects.create(
         user=user,

@@ -1,13 +1,25 @@
 {% extends 'base.html' %}
 
 {% block content %}
-<h2>Add Employee</h2>
 
-<form method="post">
-    {% csrf_token %}
-    {{ form.as_p }}
-    <button type="submit" class="btn btn-success">Create Employee</button>
-</form>
+<div class="container">
 
-<a href="{% url 'admin_users' %}" class="btn btn-secondary mt-2">Back</a>
+    <div class="card" style="max-width:600px; margin:auto;">
+
+        <h2>Add Employee</h2>
+
+        <form method="post">
+            {% csrf_token %}
+
+            {{ form.as_p }}
+
+            <button type="submit" class="btn btn-primary">Add Emoloyee</button>
+
+
+        </form>
+
+    </div>
+
+</div>
+
 {% endblock %}

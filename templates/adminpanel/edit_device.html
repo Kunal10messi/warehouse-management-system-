@@ -1,16 +1,43 @@
 {% extends 'base.html' %}
+
 {% block content %}
 
-<h3>Edit Device</h3>
-<form method="post">{% csrf_token %}
-    <input name="serial_number" value="{{ device.serial_number }}" class="form-control mb-2">
-    <input name="device_type" value="{{ device.device_type }}" class="form-control mb-2">
-    <input name="brand" value="{{ device.brand }}" class="form-control mb-2">
-    <input name="model" value="{{ device.model }}" class="form-control mb-2">
-    <input name="configuration" value="{{ device.configuration }}" class="form-control mb-2">
-    <input name="location" value="{{ device.location }}" class="form-control mb-2">
-    <input name="status" value="{{ device.status }}" class="form-control mb-2">
-    <button class="btn btn-primary">Update</button>
-</form>
+<div class="container">
+
+    <div class="card" style="max-width:600px; margin:auto;">
+
+        <h3>Edit Device</h3>
+
+        <form method="post">
+            {% csrf_token %}
+
+            <label>Serial Number</label>
+            <input name="serial_number" value="{{ device.serial_number }}">
+
+            <label>Device Type</label>
+            <input name="device_type" value="{{ device.device_type }}">
+
+            <label>Brand</label>
+            <input name="brand" value="{{ device.brand }}">
+
+            <label>Model</label>
+            <input name="model" value="{{ device.model }}">
+
+            <label>Configuration</label>
+            <input name="configuration" value="{{ device.configuration }}">
+
+            <label>Location</label>
+            <input name="location" value="{{ device.location }}">
+
+            <label>Status</label>
+            <input name="status" value="{{ device.status }}">
+
+            <button class="btn btn-primary">Update Device</button>
+
+        </form>
+
+    </div>
+
+</div>
 
 {% endblock %}

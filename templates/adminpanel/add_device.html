@@ -1,51 +1,43 @@
 {% extends 'base.html' %}
+
 {% block content %}
 
-<div class="card">
-    <h2>Add Device</h2>
+<div class="container">
 
-    <form method="post">
-        {% csrf_token %}
+    <div class="card" style="max-width:600px; margin:auto;">
 
-        <div class="mb-3">
-            <label class="form-label">Serial Number</label>
+        <h2>Add Device</h2>
+
+        <form method="post">
+            {% csrf_token %}
+
+            <label>Serial Number</label>
             {{ form.serial_number }}
-        </div>
 
-        <div class="mb-3">
-            <label class="form-label">Device Type</label>
+            <label>Device Type</label>
             {{ form.device_type }}
-        </div>
 
-        <div class="mb-3">
-            <label class="form-label">Brand</label>
+            <label>Brand</label>
             {{ form.brand }}
-        </div>
 
-        <div class="mb-3">
-            <label class="form-label">Model</label>
+            <label>Model</label>
             {{ form.model }}
-        </div>
 
-        <div class="mb-3">
-            <label class="form-label">Configuration</label>
+            <label>Configuration</label>
             {{ form.configuration }}
-        </div>
 
-        <div class="mb-3">
-            <label class="form-label">Location</label>
+            <label>Location</label>
             {{ form.location }}
-        </div>
 
-        <div class="mb-3">
-            <label class="form-label">Status</label>
+            <label>Status</label>
             {{ form.status }}
-        </div>
 
-        <button type="submit" class="btn btn-primary">Add Device</button>
+            <button type="submit" class="btn btn-primary">Add Device</button>
 
-    </form>
+        </form>
+
+    </div>
+
 </div>
-
 
 {% endblock %}

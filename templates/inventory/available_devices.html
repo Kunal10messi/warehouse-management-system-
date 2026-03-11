@@ -1,9 +1,11 @@
 {% extends 'base.html' %}
 
 {% block content %}
-<h3>Available Devices</h3>
 
-<table class="table table-bordered table-striped">
+<div class="card">
+<h3>Available Devices</h3>
+<div class="table-wrapper">
+<table class="table">
     <thead class="table-dark">
         <tr>
             <th>Serial Number</th>
@@ -31,4 +33,9 @@
         {% endfor %}
     </tbody>
 </table>
+</div>
+</div>
+
+
+
 {% endblock %}

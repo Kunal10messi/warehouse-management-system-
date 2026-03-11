@@ -19,6 +19,7 @@ def admin_dashboard(request):
     total_devices = Device.objects.count()
     available_devices = Device.objects.filter(status='AVAILABLE').count()
     assigned_devices = Device.objects.filter(status='ASSIGNED').count()
+    total_employees = User.objects.filter(role='EMPLOYEE').count()
     
     overdue_assignments = Assignment.objects.filter(
         actual_return_date__isnull=True,
@@ -36,6 +37,7 @@ def admin_dashboard(request):
         'assigned_devices': assigned_devices,
         'overdue_assignments': overdue_assignments,
         'active_assignments': active_assignments,
+        'total_employees': total_employees,
         "today": date.today()
     }
 

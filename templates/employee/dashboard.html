@@ -1,9 +1,22 @@
 {% extends 'base.html' %}
 {% block content %}
 
+{% if notifications %}
+<div class="card">
+    <h3>Notifications</h3>
+
+    {% for note in notifications %}
+        <div class="alert alert-warning">
+            {{ note }}
+        </div>
+    {% endfor %}
+</div>
+{% endif %}
+
 <div class="card">
     <h2>Employee Dashboard</h2>
 
+    <div class="table-wrapper">
     <table class="table">
         <tr>
             <th>Action</th>
@@ -37,6 +50,7 @@
             <td>Submit a request for a device.</td>
         </tr>
     </table>
+    </div>
 </div>
 
 {% endblock %}

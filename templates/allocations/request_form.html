@@ -1,0 +1,19 @@
+{% extends 'base.html' %}
+
+{% block title %}Request Form{% endblock %}
+{% block page_title %}Device Request{% endblock %}
+
+{% block content %}
+
+<div class="form-card">
+    <h3>Device Request</h3>
+    <form method="post">
+        {% csrf_token %}
+        {{ form.as_p }}
+        <div class="form-actions">
+            <button type="submit" class="btn btn-primary">Submit</button>
+        </div>
+    </form>
+</div>
+
+{% endblock %}

@@ -1,41 +1,56 @@
 {% extends 'base.html' %}
 
+{% block title %}Available Devices{% endblock %}
+{% block page_title %}Available Devices{% endblock %}
+{% block nav_available %}active{% endblock %}
+
+{% block topbar_actions %}
+    <a href="/allocations/request/" class="btn btn-primary">
+        <svg viewBox="0 0 14 14"><path d="M7 2v10M2 7h10" stroke-linecap="round"/></svg>
+        Request a Device
+    </a>
+{% endblock %}
+
 {% block content %}
 
 <div class="card">
-<h3>Available Devices</h3>
-<div class="table-wrapper">
-<table class="table">
-    <thead class="table-dark">
-        <tr>
-            <th>Serial Number</th>
-            <th>Type</th>
-            <th>Brand</th>
-            <th>Model</th>
-            <th>Configuration</th>
-            <th>Location</th>
-        </tr>
-    </thead>
-    <tbody>
-        {% for device in devices %}
-        <tr>
-            <td>{{ device.serial_number }}</td>
-            <td>{{ device.device_type }}</td>
-            <td>{{ device.brand }}</td>
-            <td>{{ device.model }}</td>
-            <td>{{ device.configuration }}</td>
-            <td>{{ device.location }}</td>
-        </tr>
-        {% empty %}
-        <tr>
-            <td colspan="6" class="text-center">No devices available</td>
-        </tr>
-        {% endfor %}
-    </tbody>
-</table>
+    <div class="card-header">
+        <div class="card-title">
+            <svg viewBox="0 0 16 16"><path d="M9 2L2 5.5V12l7 3.5 7-3.5V5.5L9 2z"/><path d="M2 5.5l7 3.5 7-3.5M9 9v6.5"/></svg>
+            Available Devices
+        </div>
+        <span class="badge badge-available">{{ devices|length }} available</span>
+    </div>
+    <div class="table-wrapper">
+        <table class="table">
+            <thead>
+                <tr>
+                    <th>Serial Number</th>
+                    <th>Type</th>
+                    <th>Brand</th>
+                    <th>Model</th>
+                    <th>Configuration</th>
+                    <th>Location</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for device in devices %}
+                <tr>
+                    <td><span class="num">{{ device.serial_number }}</span></td>
+                    <td>{{ device.device_type }}</td>
+                    <td>{{ device.brand }}</td>
+                    <td>{{ device.model }}</td>
+                    <td style="color:var(--text-secondary);">{{ device.configuration }}</td>
+                    <td style="color:var(--text-secondary);">{{ device.location }}</td>
+                </tr>
+                {% empty %}
+                <tr>
+                    <td colspan="6" class="text-center text-muted" style="padding:32px;">No devices available at this time.</td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
 </div>
-</div>
-
-
 
 {% endblock %}

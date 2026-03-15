@@ -33,7 +33,7 @@ class DeviceForm(forms.ModelForm):
 
         widgets = {
             "serial_number": forms.TextInput(attrs={"class": "form-control"}),
-            "device_type": forms.TextInput(attrs={"class": "form-control"}),
+            "device_type": forms.Select(attrs={"class": "form-control"}),
             "brand": forms.TextInput(attrs={"class": "form-control"}),
             "model": forms.TextInput(attrs={"class": "form-control"}),
             "configuration": forms.TextInput(attrs={"class": "form-control"}),

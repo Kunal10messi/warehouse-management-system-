@@ -1,64 +1,64 @@
 {% extends 'base.html' %}
+
+{% block title %}Request a Device{% endblock %}
+{% block page_title %}Request a Device{% endblock %}
+{% block nav_request %}active{% endblock %}
+
+{% block topbar_actions %}
+    <a href="/allocations/my-devices/" class="btn btn-ghost">
+        <svg viewBox="0 0 14 14"><path d="M9 11L4 7l5-4" stroke-linecap="round" stroke-linejoin="round"/></svg>
+        My Devices
+    </a>
+{% endblock %}
+
 {% block content %}
 
-<div class="container">
+<div class="form-card">
+    <h3>Request a Device</h3>
 
-    <div class="card" style="max-width:600px; margin:auto;">
-
-        <h3>Request a Device</h3>
-
-        <!-- Device Category Filter -->
-        <form method="get">
-
-            <label>Select Device Category</label>
-
+    <!-- Device Category Filter -->
+    <form method="get">
+        <div class="form-group">
+            <label>Filter by Device Category</label>
             <select name="type" onchange="this.form.submit()">
-
-                <option value="">-- Select Category --</option>
-
+                <option value="">— All Categories —</option>
                 {% for t in device_types %}
-                    <option value="{{ t }}" {% if t == selected_type %}selected{% endif %}>
-                        {{ t }}
-                    </option>
+                    <option value="{{ t }}" {% if t == selected_type %}selected{% endif %}>{{ t }}</option>
                 {% endfor %}
-
             </select>
+        </div>
+    </form>
 
-        </form>
+    <hr style="border:none; border-top:1px solid var(--border); margin:20px 0;">
 
+    <form method="post">
+        {% csrf_token %}
 
-        <form method="post">
-            {% csrf_token %}
-
+        <div class="form-group">
             <label>Select Device</label>
-
             <select name="device" required>
                 {% for d in devices %}
-                    <option value="{{ d.id }}">
-                        {{ d.serial_number }} ({{ d.location }})
-                    </option>
+                    <option value="{{ d.id }}">{{ d.serial_number }} ({{ d.location }})</option>
                 {% endfor %}
             </select>
+        </div>
 
-
+        <div class="form-group">
             <label>From Date</label>
-
             <input type="date" name="from_date" required>
+        </div>
 
-
+        <div class="form-group">
             <label>To Date</label>
-
             <input type="date" name="to_date" required>
+        </div>
 
+        <div class="form-actions">
+            <button type="submit" class="btn btn-primary">Submit Request</button>
+            <a href="/employee/dashboard/" class="btn btn-ghost">Cancel</a>
+        </div>
 
-            <button type="submit" class="btn btn-primary">
-                Submit Request
-            </button>
-
-        </form>
-
-    </div>
-
+    </form>
 </div>
 
 {% endblock %}

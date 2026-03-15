@@ -1,25 +1,29 @@
 {% extends 'base.html' %}
 
+{% block title %}Add Employee{% endblock %}
+{% block page_title %}Add Employee{% endblock %}
+{% block nav_employees %}active{% endblock %}
+
+{% block topbar_actions %}
+    <a href="/admin-panel/users/" class="btn btn-ghost">
+        <svg viewBox="0 0 14 14"><path d="M9 11L4 7l5-4" stroke-linecap="round" stroke-linejoin="round"/></svg>
+        Back to Employees
+    </a>
+{% endblock %}
+
 {% block content %}
 
-<div class="container">
+<div class="form-card">
+    <h3>Add New Employee</h3>
 
-    <div class="card" style="max-width:600px; margin:auto;">
-
-        <h2>Add Employee</h2>
-
-        <form method="post">
-            {% csrf_token %}
-
-            {{ form.as_p }}
-
-            <button type="submit" class="btn btn-primary">Add Emoloyee</button>
-
-
-        </form>
-
-    </div>
-
+    <form method="post">
+        {% csrf_token %}
+        {{ form.as_p }}
+        <div class="form-actions">
+            <button type="submit" class="btn btn-primary">Add Employee</button>
+            <a href="/admin-panel/users/" class="btn btn-ghost">Cancel</a>
+        </div>
+    </form>
 </div>
 
 {% endblock %}

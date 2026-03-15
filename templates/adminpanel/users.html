@@ -1,37 +1,67 @@
 {% extends 'base.html' %}
+
+{% block title %}Employees{% endblock %}
+{% block page_title %}Employees{% endblock %}
+{% block nav_employees %}active{% endblock %}
+
+{% block topbar_actions %}
+    <a href="/admin-panel/users/add/" class="btn btn-primary">
+        <svg viewBox="0 0 14 14"><path d="M7 2v10M2 7h10" stroke-linecap="round"/></svg>
+        Add Employee
+    </a>
+{% endblock %}
+
 {% block content %}
 
 <div class="card">
-    <h2>Employees</h2>
-
-    <a href="/admin-panel/users/add/" class="btn btn-primary">+ Add Employee</a>
-
-    <br><br>
-
-    <div class="table-wrapper">
-    <table class="table">
-        <tr>
-            <th>Username</th>
-            <th>Email</th>
-            <th>Role</th>
-            <th>Profile</th>
-        </tr>
-
-        {% for user in users %}
-        <tr>
-            <td>{{ user.username }}</td>
-            <td>{{ user.email }}</td>
-            <td>{{ user.role }}</td>
-            <td>
-                <a href="/admin-panel/users/{{ user.id }}/" class="btn btn-secondary">View</a>
-            </td>
-        </tr>
-        {% empty %}
-        <tr>
-            <td colspan="4">No employees found</td>
-        </tr>
-        {% endfor %}
-    </table>
+    <div class="card-header">
+        <div class="card-title">
+            <svg viewBox="0 0 16 16"><circle cx="8" cy="5" r="3"/><path d="M2 14c0-3.314 2.686-5 6-5s6 1.686 6 5"/></svg>
+            All Employees
+        </div>
+        <span class="text-muted" style="font-size:12px;">{{ users|length }} total</span>
     </div>
+    <div class="table-wrapper">
+        <table class="table">
+            <thead>
+                <tr>
+                    <th>Employee</th>
+                    <th>Email</th>
+                    <th>Role</th>
+                    <th>Profile</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for user in users %}
+                <tr>
+                    <td>
+                        <div style="display:flex; align-items:center; gap:10px;">
+                            <div style="width:30px; height:30px; border-radius:50%; background:var(--bg-elevated); color:var(--accent); font-size:11px; font-weight:600; display:flex; align-items:center; justify-content:center; flex-shrink:0;">
+                                {{ user.username|slice:":2"|upper }}
+                            </div>
+                            <span style="font-weight:500;">{{ user.username }}</span>
+                        </div>
+                    </td>
+                    <td style="color:var(--text-secondary);">{{ user.email }}</td>
+                    <td>
+                        {% if user.role == 'ADMIN' %}
+                            <span class="badge badge-info">Admin</span>
+                        {% else %}
+                            <span class="badge" style="background:var(--bg-elevated); color:var(--text-secondary);">Employee</span>
+                        {% endif %}
+                    </td>
+                    <td>
+                        <a href="/admin-panel/users/{{ user.id }}/" class="btn btn-secondary">View Profile</a>
+                    </td>
+                </tr>
+                {% empty %}
+                <tr>
+                    <td colspan="4" class="text-center text-muted" style="padding:32px;">No employees found.</td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+</div>
 
 {% endblock %}

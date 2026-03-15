@@ -6,7 +6,6 @@ class Device(models.Model):
         ('CPU', 'CPU'),
         ('RAM', 'RAM'),
         ('SSD', 'SSD'),
-        ('OTHER', 'Other'),
     )
 
     serial_number = models.CharField(max_length=100, unique=True)

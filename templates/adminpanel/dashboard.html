@@ -1,125 +1,134 @@
-{% extends 'base.html' %} {% block content %}
+{% extends 'base.html' %}
 
-<!-- ===== Admin Quick Actions ===== -->
-<div class="card">
-  <h2>Admin Dashboard</h2>
+{% block title %}Dashboard{% endblock %}
+{% block page_title %}Dashboard{% endblock %}
+{% block nav_dashboard %}active{% endblock %}
 
-  <div style="display: flex; gap: 15px; margin-top: 15px">
-    <a href="/admin-panel/devices/" class="btn btn-primary"> Manage Devices </a>
-
-    <a href="/admin-panel/users/" class="btn btn-secondary">
-      Manage Employees
+{% block topbar_actions %}
+    <a href="/admin-panel/devices/add/" class="btn btn-primary">
+        <svg viewBox="0 0 14 14"><path d="M7 2v10M2 7h10" stroke-linecap="round"/></svg>
+        Add Device
     </a>
-  </div>
-</div>
+    <a href="/admin-panel/users/add/" class="btn btn-secondary">
+        <svg viewBox="0 0 14 14"><circle cx="7" cy="4.5" r="2.5"/><path d="M1 13c0-3 2.5-4.5 6-4.5s6 1.5 6 4.5" stroke-linecap="round"/><path d="M11 2v4M9 4h4" stroke-linecap="round"/></svg>
+        Add Employee
+    </a>
+{% endblock %}
 
-<!-- ===== System Overview ===== -->
-<div class="card">
-  <h3>System Overview</h3>
+{% block content %}
 
-  <div class="stats-grid">
+<!-- ===== Stat Cards ===== -->
+<div class="stats-grid">
+
     <div class="stat-card">
-      <div class="stat-title">Total Devices</div>
-      <div class="stat-value">{{ total_devices }}</div>
+        <div class="stat-title">Total Devices</div>
+        <div class="stat-value">{{ total_devices }}</div>
     </div>
 
     <div class="stat-card">
-      <div class="stat-title">Available Devices</div>
-      <div class="stat-value">{{ available_devices }}</div>
+        <div class="stat-title">Available</div>
+        <div class="stat-value" style="color:var(--green);">{{ available_devices }}</div>
     </div>
 
     <div class="stat-card">
-      <div class="stat-title">Assigned Devices</div>
-      <div class="stat-value">{{ assigned_devices }}</div>
+        <div class="stat-title">Assigned</div>
+        <div class="stat-value" style="color:var(--amber);">{{ assigned_devices }}</div>
     </div>
 
     <div class="stat-card">
-      <div class="stat-title">Employees</div>
-      <div class="stat-value">{{ total_employees }}</div>
+        <div class="stat-title">Employees</div>
+        <div class="stat-value" style="color:var(--blue);">{{ total_employees }}</div>
     </div>
-  </div>
+
 </div>
 
 <!-- ===== Pending Requests ===== -->
 <div class="card">
-  <h3>Pending Device Requests</h3>
-
-  <div class="table-wrapper">
-    <table class="table">
-      <tr>
-        <th>Employee</th>
-        <th>Device</th>
-        <th>From</th>
-        <th>To</th>
-        <th>Action</th>
-      </tr>
-
-      {% for req in pending_requests %}
-      <tr>
-        <td>{{ req.user.username }}</td>
-        <td>{{ req.device.serial_number }}</td>
-        <td>{{ req.from_date }}</td>
-        <td>{{ req.to_date }}</td>
-        <td>
-          <a href="/admin-panel/approve/{{ req.id }}/" class="btn btn-success">
-            Approve
-          </a>
-          <a href="/admin-panel/reject/{{ req.id }}/" class="btn btn-danger">
-            Reject
-          </a>
-        </td>
-      </tr>
-      {% empty %}
-      <tr>
-        <td colspan="5">No pending requests.</td>
-      </tr>
-      {% endfor %}
-    </table>
-  </div>
+    <div class="card-header">
+        <div class="card-title">
+            <svg viewBox="0 0 16 16"><circle cx="8" cy="8" r="5"/><path d="M8 5v3l2 2" stroke-linecap="round"/></svg>
+            Pending Device Requests
+        </div>
+        <span class="badge badge-warning">{{ pending_requests|length }} pending</span>
+    </div>
+    <div class="table-wrapper">
+        <table class="table">
+            <thead>
+                <tr>
+                    <th>Employee</th>
+                    <th>Device</th>
+                    <th>From</th>
+                    <th>To</th>
+                    <th>Action</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for req in pending_requests %}
+                <tr>
+                    <td>{{ req.user.username }}</td>
+                    <td><span class="num">{{ req.device.serial_number }}</span></td>
+                    <td class="num">{{ req.from_date }}</td>
+                    <td class="num">{{ req.to_date }}</td>
+                    <td>
+                        <a href="/admin-panel/approve/{{ req.id }}/" class="btn btn-success">Approve</a>
+                        <a href="/admin-panel/reject/{{ req.id }}/" class="btn btn-danger">Reject</a>
+                    </td>
+                </tr>
+                {% empty %}
+                <tr>
+                    <td colspan="5" class="text-center text-muted" style="padding:24px;">No pending requests.</td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
 </div>
 
-<!-- ===== Assigned Devices ===== -->
-<div class="card mt-4">
-  <h3>Currently Assigned Devices</h3>
-
-  <div class="table-wrapper">
-    <table class="table">
-      <thead>
-        <tr>
-          <th>Device</th>
-          <th>Serial</th>
-          <th>Assigned To</th>
-          <th>Issued On</th>
-          <th>Expected Return</th>
-          <th>Status</th>
-        </tr>
-      </thead>
-      <tbody>
-        {% for assignment in active_assignments %}
-        <tr
-          class="{% if assignment.expected_return_date < today %}table-danger{% endif %}"
-        >
-          <td>{{ assignment.device.device_type }}</td>
-          <td>{{ assignment.device.serial_number }}</td>
-          <td>{{ assignment.user.username }}</td>
-          <td>{{ assignment.issue_date }}</td>
-          <td>{{ assignment.expected_return_date }}</td>
-          <td>
-            {% if assignment.expected_return_date < today %}
-            <span class="badge badge-danger">Overdue</span>
-            {% else %}
-            <span class="badge badge-success">Active</span>
-            {% endif %}
-          </td>
-        </tr>
-        {% empty %}
-        <tr>
-          <td colspan="5">No active assignments</td>
-        </tr>
-        {% endfor %}
-      </tbody>
-    </table>
-  </div>
+<!-- ===== Active Assignments ===== -->
+<div class="card">
+    <div class="card-header">
+        <div class="card-title">
+            <svg viewBox="0 0 16 16"><rect x="2" y="3" width="12" height="10" rx="2"/><path d="M5 7h6M5 10h4" stroke-linecap="round"/></svg>
+            Currently Assigned Devices
+        </div>
+        <a href="/admin-panel/devices/" class="btn btn-ghost" style="font-size:12px;">View all devices</a>
+    </div>
+    <div class="table-wrapper">
+        <table class="table">
+            <thead>
+                <tr>
+                    <th>Device</th>
+                    <th>Serial</th>
+                    <th>Assigned To</th>
+                    <th>Issued On</th>
+                    <th>Expected Return</th>
+                    <th>Status</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for assignment in active_assignments %}
+                <tr class="{% if assignment.expected_return_date < today %}table-danger{% endif %}">
+                    <td>{{ assignment.device.device_type }}</td>
+                    <td><span class="num">{{ assignment.device.serial_number }}</span></td>
+                    <td>{{ assignment.user.username }}</td>
+                    <td class="num">{{ assignment.issue_date }}</td>
+                    <td class="num">{{ assignment.expected_return_date }}</td>
+                    <td>
+                        {% if assignment.expected_return_date < today %}
+                            <span class="badge badge-danger">Overdue</span>
+                        {% else %}
+                            <span class="badge badge-success">Active</span>
+                        {% endif %}
+                    </td>
+                </tr>
+                {% empty %}
+                <tr>
+                    <td colspan="6" class="text-center text-muted" style="padding:24px;">No active assignments.</td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
 </div>
 
 {% endblock %}

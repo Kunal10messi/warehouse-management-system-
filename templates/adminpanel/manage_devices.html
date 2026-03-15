@@ -1,46 +1,68 @@
 {% extends 'base.html' %}
+
+{% block title %}Manage Devices{% endblock %}
+{% block page_title %}Manage Devices{% endblock %}
+{% block nav_devices %}active{% endblock %}
+
+{% block topbar_actions %}
+    <a href="/admin-panel/devices/add/" class="btn btn-primary">
+        <svg viewBox="0 0 14 14"><path d="M7 2v10M2 7h10" stroke-linecap="round"/></svg>
+        Add Device
+    </a>
+{% endblock %}
+
 {% block content %}
 
 <div class="card">
-    <h2>Manage Devices</h2>
-
-    <a href="/admin-panel/devices/add/" class="btn btn-primary">+ Add Device</a>
-
-    <br><br>
+    <div class="card-header">
+        <div class="card-title">
+            <svg viewBox="0 0 16 16"><path d="M9 2L2 5.5V12l7 3.5 7-3.5V5.5L9 2z"/><path d="M2 5.5l7 3.5 7-3.5M9 9v6.5"/></svg>
+            All Devices
+        </div>
+        <span class="text-muted" style="font-size:12px;">{{ devices|length }} total</span>
+    </div>
     <div class="table-wrapper">
-    <table class="table">
-
-        <tr>
-            <th>Serial Number</th>
-            <th>Type</th>
-            <th>Brand</th>
-            <th>Status</th>
-            <th>Action</th>
-        </tr>
-
-        {% for device in devices %}
-        <tr>
-            <td>{{ device.serial_number }}</td>
-            <td>{{ device.device_type }}</td>
-            <td>{{ device.brand }}</td>
-            <td>
-                {% if device.status == "AVAILABLE" %}
-                    <span class="badge badge-available">Available</span>
-                {% else %}
-                    <span class="badge badge-assigned">Assigned</span>
-                {% endif %}
-            </td>
-            <td>
-                <a href="/admin-panel/devices/edit/{{ device.id }}/" class="btn btn-secondary">Edit</a>
-                <a href="/admin-panel/devices/delete/{{ device.id }}/" class="btn btn-danger">Delete</a>
-            </td>
-        </tr>
-        {% empty %}
-        <tr>
-            <td colspan="5">No devices found</td>
-        </tr>
-        {% endfor %}
-    </table>
+        <table class="table">
+            <thead>
+                <tr>
+                    <th>Serial Number</th>
+                    <th>Type</th>
+                    <th>Brand</th>
+                    <th>Model</th>
+                    <th>Location</th>
+                    <th>Status</th>
+                    <th>Actions</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for device in devices %}
+                <tr>
+                    <td><span class="num">{{ device.serial_number }}</span></td>
+                    <td>{{ device.device_type }}</td>
+                    <td>{{ device.brand }}</td>
+                    <td>{{ device.model }}</td>
+                    <td style="color:var(--text-secondary);">{{ device.location }}</td>
+                    <td>
+                        {% if device.status == "AVAILABLE" %}
+                            <span class="badge badge-available">Available</span>
+                        {% elif device.status == "MAINTENANCE" %}
+                            <span class="badge badge-warning">Maintenance</span>
+                        {% else %}
+                            <span class="badge badge-assigned">Assigned</span>
+                        {% endif %}
+                    </td>
+                    <td>
+                        <a href="/admin-panel/devices/edit/{{ device.id }}/" class="btn btn-secondary">Edit</a>
+                        <a href="/admin-panel/devices/delete/{{ device.id }}/" class="btn btn-danger">Delete</a>
+                    </td>
+                </tr>
+                {% empty %}
+                <tr>
+                    <td colspan="7" class="text-center text-muted" style="padding:32px;">No devices found.</td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
     </div>
 </div>
 

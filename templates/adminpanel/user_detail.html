@@ -1,68 +1,108 @@
-{% extends 'base.html' %} {% block content %}
+{% extends 'base.html' %}
 
-<h3>Employee Profile: {{ emp.username }}</h3>
+{% block title %}{{ emp.username }} — Profile{% endblock %}
+{% block page_title %}Employee Profile{% endblock %}
+{% block nav_employees %}active{% endblock %}
 
-<p><strong>Email:</strong> {{ emp.email }}</p>
-<p><strong>Total Fine:</strong> ₹{{ total_fine }}</p>
+{% block topbar_actions %}
+    <a href="/admin-panel/users/" class="btn btn-ghost">
+        <svg viewBox="0 0 14 14"><path d="M9 11L4 7l5-4" stroke-linecap="round" stroke-linejoin="round"/></svg>
+        Back to Employees
+    </a>
+{% endblock %}
 
+{% block content %}
+
+<!-- Profile Header -->
 <div class="card">
-  <h5>Active Assignments</h5>
-  <div class="table-wrapper">
-    <table class="table">
-      <thead class="table-dark">
-        <tr>
-          <th>Device</th>
-          <th>Serial</th>
-          <th>Issued On</th>
-          <th>Expected Return</th>
-        </tr>
-      </thead>
-      <tbody>
-        {% for a in active_assignments %}
-        <tr>
-          <td>{{ a.device.device_type }}</td>
-          <td>{{ a.device.serial_number }}</td>
-          <td>{{ a.issue_date }}</td>
-          <td>{{ a.expected_return_date }}</td>
-        </tr>
-        {% empty %}
-        <tr>
-          <td colspan="4">No active devices</td>
-        </tr>
-        {% endfor %}
-      </tbody>
-    </table>
-  </div>
+    <div class="profile-header">
+        <div class="profile-avatar">{{ emp.username|slice:":2"|upper }}</div>
+        <div class="profile-info">
+            <div class="profile-name">{{ emp.username }}</div>
+            <div class="profile-email">{{ emp.email }}</div>
+        </div>
+        <div class="profile-fine">
+            <div class="profile-fine-label">Total Fine</div>
+            <div class="profile-fine-value">₹{{ total_fine }}</div>
+        </div>
+    </div>
 </div>
 
-<br />
-
+<!-- Active Assignments -->
 <div class="card">
-  <h5>All Assignment History</h5>
-  <div class="table-wrapper">
-    <table class="table">
-      <thead class="table-dark">
-        <tr>
-          <th>Device</th>
-          <th>Serial</th>
-          <th>Issued</th>
-          <th>Returned</th>
-          <th>Fine</th>
-        </tr>
-      </thead>
-      <tbody>
-        {% for a in assignments %}
-        <tr>
-          <td>{{ a.device.device_type }}</td>
-          <td>{{ a.device.serial_number }}</td>
-          <td>{{ a.issue_date }}</td>
-          <td>{{ a.actual_return_date|default:"Not Returned" }}</td>
-          <td>{{ a.fine_amount|default:0 }}</td>
-        </tr>
-        {% endfor %}
-      </tbody>
-    </table>
-  </div>
+    <div class="card-header">
+        <div class="card-title">
+            <svg viewBox="0 0 16 16"><rect x="2" y="3" width="12" height="10" rx="2"/><path d="M5 7h6M5 10h4" stroke-linecap="round"/></svg>
+            Active Assignments
+        </div>
+        <span class="badge badge-success">{{ active_assignments|length }} active</span>
+    </div>
+    <div class="table-wrapper">
+        <table class="table">
+            <thead>
+                <tr>
+                    <th>Device</th>
+                    <th>Serial</th>
+                    <th>Issued On</th>
+                    <th>Expected Return</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for a in active_assignments %}
+                <tr>
+                    <td>{{ a.device.device_type }}</td>
+                    <td><span class="num">{{ a.device.serial_number }}</span></td>
+                    <td class="num">{{ a.issue_date }}</td>
+                    <td class="num">{{ a.expected_return_date }}</td>
+                </tr>
+                {% empty %}
+                <tr>
+                    <td colspan="4" class="text-center text-muted" style="padding:24px;">No active devices assigned.</td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+</div>
+
+<!-- Assignment History -->
+<div class="card">
+    <div class="card-header">
+        <div class="card-title">
+            <svg viewBox="0 0 16 16"><path d="M8 3v5l3 3"/><circle cx="8" cy="8" r="5"/></svg>
+            Assignment History
+        </div>
+    </div>
+    <div class="table-wrapper">
+        <table class="table">
+            <thead>
+                <tr>
+                    <th>Device</th>
+                    <th>Serial</th>
+                    <th>Issued</th>
+                    <th>Returned</th>
+                    <th>Fine</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for a in assignments %}
+                <tr>
+                    <td>{{ a.device.device_type }}</td>
+                    <td><span class="num">{{ a.device.serial_number }}</span></td>
+                    <td class="num">{{ a.issue_date }}</td>
+                    <td class="num">{{ a.actual_return_date|default:"Not Returned" }}</td>
+                    <td>
+                        {% if a.fine_amount and a.fine_amount > 0 %}
+                            <span style="color:var(--amber); font-family:var(--font-mono); font-size:12px;">₹{{ a.fine_amount }}</span>
+                        {% else %}
+                            <span class="text-muted">—</span>
+                        {% endif %}
+                    </td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
 </div>
 
 {% endblock %}

@@ -1,43 +1,65 @@
 {% extends 'base.html' %}
 
+{% block title %}Edit Device{% endblock %}
+{% block page_title %}Edit Device{% endblock %}
+{% block nav_devices %}active{% endblock %}
+
+{% block topbar_actions %}
+    <a href="/admin-panel/devices/" class="btn btn-ghost">
+        <svg viewBox="0 0 14 14"><path d="M9 11L4 7l5-4" stroke-linecap="round" stroke-linejoin="round"/></svg>
+        Back to Devices
+    </a>
+{% endblock %}
+
 {% block content %}
 
-<div class="container">
+<div class="form-card">
+    <h3>Edit Device — <span style="color:var(--text-secondary); font-weight:400; font-family:var(--font-mono); font-size:14px;">{{ device.serial_number }}</span></h3>
 
-    <div class="card" style="max-width:600px; margin:auto;">
+    <form method="post">
+        {% csrf_token %}
 
-        <h3>Edit Device</h3>
-
-        <form method="post">
-            {% csrf_token %}
-
+        <div class="form-group">
             <label>Serial Number</label>
             <input name="serial_number" value="{{ device.serial_number }}">
+        </div>
 
+        <div class="form-group">
             <label>Device Type</label>
             <input name="device_type" value="{{ device.device_type }}">
+        </div>
 
+        <div class="form-group">
             <label>Brand</label>
             <input name="brand" value="{{ device.brand }}">
+        </div>
 
+        <div class="form-group">
             <label>Model</label>
             <input name="model" value="{{ device.model }}">
+        </div>
 
+        <div class="form-group">
             <label>Configuration</label>
             <input name="configuration" value="{{ device.configuration }}">
+        </div>
 
+        <div class="form-group">
             <label>Location</label>
             <input name="location" value="{{ device.location }}">
+        </div>
 
+        <div class="form-group">
             <label>Status</label>
             <input name="status" value="{{ device.status }}">
+        </div>
 
-            <button class="btn btn-primary">Update Device</button>
+        <div class="form-actions">
+            <button type="submit" class="btn btn-primary">Update Device</button>
+            <a href="/admin-panel/devices/" class="btn btn-ghost">Cancel</a>
+        </div>
 
-        </form>
-
-    </div>
-
+    </form>
 </div>
 
 {% endblock %}

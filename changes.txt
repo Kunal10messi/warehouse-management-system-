@@ -1,5 +1,7 @@
 when i go to http://127.0.0.1:8000/allocations/request/ or any other url withoutout logging in, it throws and error. It should re-direct me to login page
 
-fix the tables
+DeviceRequest has no protection against double-requesting. An employee could submit 10 requests for the same device. The guard in approve_request() prevents double assignment, but there's no unique_together or validation preventing a flood of pending requests. A real system would add a constraint.
+
+approval failed notification
 
 limit

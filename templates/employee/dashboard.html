@@ -10,12 +10,40 @@
 {% if notifications %}
 <div class="notification-list">
     {% for note in notifications %}
+
+    {% if note.type == 'approval' %}
+    <div class="alert alert-success">
+        <svg viewBox="0 0 16 16" style="width:15px;height:15px;stroke:currentColor;fill:none;stroke-width:1.5;flex-shrink:0;">
+            <path d="M2 8l4 4 8-8" stroke-linecap="round" stroke-linejoin="round"/>
+        </svg>
+        {{ note.message }}
+    </div>
+
+    {% elif note.type == 'rejection' %}
+    <div class="alert alert-danger">
+        <svg viewBox="0 0 16 16" style="width:15px;height:15px;stroke:currentColor;fill:none;stroke-width:1.5;flex-shrink:0;">
+            <path d="M3 3l10 10M13 3L3 13" stroke-linecap="round"/>
+        </svg>
+        {{ note.message }}
+    </div>
+
+    {% elif note.type == 'overdue' %}
+    <div class="alert alert-danger">
+        <svg viewBox="0 0 16 16" style="width:15px;height:15px;stroke:currentColor;fill:none;stroke-width:1.5;flex-shrink:0;">
+            <path d="M8 2l6 10H2L8 2z"/><path d="M8 7v3M8 11.5v.5" stroke-linecap="round"/>
+        </svg>
+        {{ note.message }}
+    </div>
+
+    {% else %}
     <div class="alert alert-warning">
         <svg viewBox="0 0 16 16" style="width:15px;height:15px;stroke:currentColor;fill:none;stroke-width:1.5;flex-shrink:0;">
             <path d="M8 2l6 10H2L8 2z"/><path d="M8 7v3M8 11.5v.5" stroke-linecap="round"/>
         </svg>
-        {{ note }}
+        {{ note.message }}
     </div>
+    {% endif %}
+
     {% endfor %}
 </div>
 {% endif %}
@@ -30,7 +58,7 @@
     </div>
     <div style="padding: 20px; display:flex; flex-direction:column; gap:12px;">
 
-        <div style="display:flex; align-items:center; justify-content:space-between; padding:16px 20px; background:var(--bg-elevated); border-radius:var(--radius-md); border:1px solid var(--border);">
+        <div class="dashboard-action-row" style="display:flex; align-items:center; justify-content:space-between; padding:16px 20px; background:var(--bg-elevated); border-radius:var(--radius-md); border:1px solid var(--border);">
             <div>
                 <div style="font-weight:500; color:var(--text-primary); margin-bottom:3px;">Available Devices</div>
                 <div class="action-desc">Browse all devices in the warehouse inventory.</div>
@@ -38,7 +66,7 @@
             <a href="/inventory/available/" class="btn btn-primary">Browse Inventory</a>
         </div>
 
-        <div style="display:flex; align-items:center; justify-content:space-between; padding:16px 20px; background:var(--bg-elevated); border-radius:var(--radius-md); border:1px solid var(--border);">
+        <div class="dashboard-action-row" style="display:flex; align-items:center; justify-content:space-between; padding:16px 20px; background:var(--bg-elevated); border-radius:var(--radius-md); border:1px solid var(--border);">
             <div>
                 <div style="font-weight:500; color:var(--text-primary); margin-bottom:3px;">My Assigned Devices</div>
                 <div class="action-desc">View and return devices currently assigned to you.</div>
@@ -46,7 +74,7 @@
             <a href="/allocations/my-devices/" class="btn btn-secondary">View My Devices</a>
         </div>
 
-        <div style="display:flex; align-items:center; justify-content:space-between; padding:16px 20px; background:var(--bg-elevated); border-radius:var(--radius-md); border:1px solid var(--border);">
+        <div class="dashboard-action-row" style="display:flex; align-items:center; justify-content:space-between; padding:16px 20px; background:var(--bg-elevated); border-radius:var(--radius-md); border:1px solid var(--border);">
             <div>
                 <div style="font-weight:500; color:var(--text-primary); margin-bottom:3px;">Request a Device</div>
                 <div class="action-desc">Submit a request for a device from the warehouse.</div>

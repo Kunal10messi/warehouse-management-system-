@@ -18,7 +18,7 @@ class DeviceRequest(models.Model):
     from_date = models.DateField()
     to_date = models.DateField()
     status = models.CharField(max_length=20, choices=STATUS_CHOICES, default='PENDING')
-
+    rejection_seen = models.BooleanField(default=False)  
     def __str__(self):
         return f"{self.user} → {self.device} ({self.status})"
 
@@ -30,13 +30,11 @@ class Assignment(models.Model):
     expected_return_date = models.DateField()
     actual_return_date = models.DateField(null=True, blank=True)
     fine_amount = models.DecimalField(max_digits=10, decimal_places=2, default=0)
-
+    approval_seen = models.BooleanField(default=False)
     @property
     def fine(self):
-        from .services import FINE_PER_DAY  # import here, not at top
-
+        from .services import FINE_PER_DAY
         if self.actual_return_date and self.actual_return_date > self.expected_return_date:
             days_late = (self.actual_return_date - self.expected_return_date).days
             return days_late * FINE_PER_DAY
         return 0
-

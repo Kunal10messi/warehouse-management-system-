@@ -1,16 +1,30 @@
 from django.shortcuts import render, redirect
 from django.contrib.auth.decorators import login_required
 from inventory.models import Device
-from .models import DeviceRequest
+from .models import DeviceRequest, Assignment
 from datetime import date
-from .models import Assignment
 from .services import return_device
 
 
 @login_required
 def my_devices(request):
-    assignments = Assignment.objects.filter(user=request.user, actual_return_date__isnull=True)
-    return render(request, 'allocations/my_devices.html', {'assignments': assignments})
+    active_assignments = Assignment.objects.filter(
+        user=request.user,
+        actual_return_date__isnull=True
+    ).select_related('device')
+
+    history = Assignment.objects.filter(
+        user=request.user,
+        actual_return_date__isnull=False
+    ).select_related('device').order_by('-actual_return_date')
+
+    total_fine = sum(a.fine_amount for a in history)
+
+    return render(request, 'allocations/my_devices.html', {
+        'assignments': active_assignments,
+        'history': history,
+        'total_fine': total_fine
+    })
 
 
 @login_required

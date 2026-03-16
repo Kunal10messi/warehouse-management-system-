@@ -5,23 +5,23 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>{% block title %}Inventory Management System{% endblock %} — NVIDIA</title>
     {% load static %}
+    <!-- Bootstrap 5 CSS -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.2/css/bootstrap.min.css">
+    <!-- Custom theme (overrides Bootstrap) -->
     <link rel="stylesheet" href="{% static 'style.css' %}">
 </head>
 <body>
 
 <div class="wms-layout">
 
+    <!-- Overlay for mobile sidebar -->
+    <div class="sidebar-overlay" id="sidebarOverlay"></div>
+
     <!-- ===== Sidebar ===== -->
-    <aside class="sidebar">
+    <aside class="sidebar" id="sidebar">
 
         <div class="sidebar-brand">
-            <div class="sidebar-brand-icon">
-                <svg viewBox="0 0 18 18"><path d="M9 2L2 5.5V12l7 3.5 7-3.5V5.5L9 2z"/><path d="M2 5.5l7 3.5 7-3.5M9 9v6.5"/></svg>
-            </div>
-            <div class="sidebar-brand-text">
-                <div class="sidebar-brand-name">NVIDIA</div>
-                <div class="sidebar-brand-sub">Inventory</div>
-            </div>
+            <img class="sidebar-logo" src="{% static 'images/nvidia-logo.png' %}" alt="NVIDIA">
         </div>
 
         <nav class="sidebar-nav">
@@ -90,7 +90,13 @@
 
         <!-- Topbar -->
         <header class="topbar">
-            <span class="topbar-title">{% block page_title %}Dashboard{% endblock %}</span>
+            <div class="topbar-left">
+                <!-- Hamburger — only visible on mobile -->
+                <button class="topbar-menu-btn" id="sidebarToggle" aria-label="Open sidebar">
+                    <svg viewBox="0 0 20 20"><path d="M3 5h14M3 10h14M3 15h14" stroke-linecap="round"/></svg>
+                </button>
+                <span class="topbar-title">{% block page_title %}Dashboard{% endblock %}</span>
+            </div>
             <div class="topbar-actions">
                 {% block topbar_actions %}{% endblock %}
             </div>
@@ -115,6 +121,36 @@
     </div><!-- /.wms-main -->
 
 </div><!-- /.wms-layout -->
+
+<!-- Bootstrap 5 JS -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.2/js/bootstrap.bundle.min.js"></script>
+
+<script>
+    const sidebar = document.getElementById('sidebar');
+    const overlay = document.getElementById('sidebarOverlay');
+    const toggleBtn = document.getElementById('sidebarToggle');
+    const closeBtn = document.getElementById('sidebarClose');
+
+    function openSidebar() {
+        sidebar.classList.add('sidebar-open');
+        overlay.classList.add('overlay-open');
+        document.body.style.overflow = 'hidden';
+    }
+    function closeSidebar() {
+        sidebar.classList.remove('sidebar-open');
+        overlay.classList.remove('overlay-open');
+        document.body.style.overflow = '';
+    }
+
+    if (toggleBtn) toggleBtn.addEventListener('click', openSidebar);
+    if (closeBtn)  closeBtn.addEventListener('click', closeSidebar);
+    if (overlay)   overlay.addEventListener('click', closeSidebar);
+
+    // Close sidebar on resize if going back to desktop
+    window.addEventListener('resize', function() {
+        if (window.innerWidth > 768) closeSidebar();
+    });
+</script>
 
 </body>
 </html>

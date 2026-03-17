@@ -1,30 +1,16 @@
 from django.shortcuts import render, redirect
 from django.contrib.auth.decorators import login_required
 from inventory.models import Device
-from .models import DeviceRequest, Assignment
+from .models import DeviceRequest
 from datetime import date
+from .models import Assignment
 from .services import return_device
 
 
 @login_required
 def my_devices(request):
-    active_assignments = Assignment.objects.filter(
-        user=request.user,
-        actual_return_date__isnull=True
-    ).select_related('device')
-
-    history = Assignment.objects.filter(
-        user=request.user,
-        actual_return_date__isnull=False
-    ).select_related('device').order_by('-actual_return_date')
-
-    total_fine = sum(a.fine_amount for a in history)
-
-    return render(request, 'allocations/my_devices.html', {
-        'assignments': active_assignments,
-        'history': history,
-        'total_fine': total_fine
-    })
+    assignments = Assignment.objects.filter(user=request.user, actual_return_date__isnull=True)
+    return render(request, 'allocations/my_devices.html', {'assignments': assignments})
 
 
 @login_required
@@ -42,10 +28,32 @@ def request_device(request):
     if selected_type:
         devices = devices.filter(device_type=selected_type)
 
+    today = date.today()
+
     if request.method == 'POST':
         device_id = request.POST['device']
-        from_date = request.POST['from_date']
-        to_date = request.POST['to_date']
+        from_date = date.fromisoformat(request.POST['from_date'])
+        to_date = date.fromisoformat(request.POST['to_date'])
+
+        # if from_date < today or to_date < today:
+        #     device_types = Device.objects.values_list('device_type', flat=True).distinct()
+        #     return render(request, 'allocations/request_device.html', {
+        #         'devices': devices,
+        #         'device_types': device_types,
+        #         'selected_type': selected_type,
+        #         'today': today,
+        #         'error': 'Dates cannot be in the past.'
+        #     })
+
+        # if to_date < from_date:
+        #     device_types = Device.objects.values_list('device_type', flat=True).distinct()
+        #     return render(request, 'allocations/request_device.html', {
+        #         'devices': devices,
+        #         'device_types': device_types,
+        #         'selected_type': selected_type,
+        #         'today': today,
+        #         'error': 'To date cannot be before from date.'
+        #     })
 
         device = Device.objects.get(id=device_id)
 
@@ -63,5 +71,6 @@ def request_device(request):
     return render(request, 'allocations/request_device.html', {
         'devices': devices,
         'device_types': device_types,
-        'selected_type': selected_type
+        'selected_type': selected_type,
+        'today': today,
     })

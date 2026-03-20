@@ -1,0 +1,1 @@
+web: gunicorn warehouse_system.wsgi:application

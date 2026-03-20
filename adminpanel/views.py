@@ -131,7 +131,7 @@ def delete_device(request, device_id):
 
 @admin_required
 def user_list(request):
-    users = User.objects.filter(role='EMPLOYEE')
+    users = User.objects.filter(role='EMPLOYEE').order_by('username')
     return render(request, 'adminpanel/users.html', {'users': users})
 
 

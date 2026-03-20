@@ -1,7 +1,8 @@
-when i go to http://127.0.0.1:8000/allocations/request/ or any other url withoutout logging in, it throws and error. It should re-direct me to login page
 
-DeviceRequest has no protection against double-requesting. An employee could submit 10 requests for the same device. The guard in approve_request() prevents double assignment, but there's no unique_together or validation preventing a flood of pending requests. A real system would add a constraint.
+request devices form and back button
 
-approval failed notification
+admin-panel/users/ shows list of user in random order, is should shown in ficed order, should also have a search button
+
+history of assigned devices for user not showing
 
 limit

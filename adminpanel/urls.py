@@ -2,7 +2,7 @@ from django.urls import path
 from .views import (
     admin_dashboard, approve_request_view, reject_request_view,
     manage_devices, add_device, edit_device, delete_device,
-    user_list, user_detail, add_employee   
+    user_list, user_detail, add_employee, pending_requests_count
 )
 
 urlpatterns = [
@@ -18,5 +18,6 @@ urlpatterns = [
     path('users/', user_list, name='admin_users'),
     path('users/<int:user_id>/', user_detail, name='admin_user_detail'),
 
-    path('users/add/', add_employee, name='admin_add_employee'),  
+    path('users/add/', add_employee, name='admin_add_employee'),
+    path('api/pending-count/', pending_requests_count, name='pending_requests_count'),
 ]

@@ -182,3 +182,20 @@
 </div>
 
 {% endblock %}
+
+{% block extra_js %}
+<script>
+    let lastCount = {{ pending_requests|length }};
+
+    setInterval(async () => {
+        try {
+            const res = await fetch('/admin-panel/api/pending-count/', { credentials: 'same-origin' });
+            const data = await res.json();
+            if (data.count !== lastCount) {
+                lastCount = data.count;
+                location.reload();
+            }
+        } catch (e) {}
+    }, 15000);
+</script>
+{% endblock %}

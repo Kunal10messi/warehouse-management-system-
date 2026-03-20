@@ -100,3 +100,17 @@
 </div>
 
 {% endblock %}
+
+{% block extra_js %}
+<script>
+    setInterval(async () => {
+        try {
+            const res = await fetch('/api/notification-check/');
+            const data = await res.json();
+            if (data.has_new) {
+                location.reload();
+            }
+        } catch (e) {}
+    }, 20000);
+</script>
+{% endblock %}

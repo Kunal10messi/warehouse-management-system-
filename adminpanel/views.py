@@ -160,3 +160,10 @@ def add_employee(request):
         form = EmployeeCreateForm()
     return render(request, 'adminpanel/add_employee.html', {'form': form})
 
+
+
+@login_required
+def pending_requests_count(request):
+    from django.http import JsonResponse
+    count = DeviceRequest.objects.filter(status='PENDING').count()
+    return JsonResponse({'count': count})

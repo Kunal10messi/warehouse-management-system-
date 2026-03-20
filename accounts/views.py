@@ -96,3 +96,26 @@ def root_redirect(request):
             return redirect('admin_dashboard')
         return redirect('employee_dashboard')
     return redirect('login')
+
+@login_required
+def notification_check(request):
+    from django.http import JsonResponse
+    from datetime import date, timedelta
+    today = date.today()
+    two_days_ago = today - timedelta(days=2)
+
+    has_new = (
+        Assignment.objects.filter(
+            user=request.user,
+            approval_seen=False,
+            issue_date__gte=two_days_ago
+        ).exists()
+        or
+        DeviceRequest.objects.filter(
+            user=request.user,
+            status='REJECTED',
+            rejection_seen=False,
+            request_date__date__gte=two_days_ago
+        ).exists()
+    )
+    return JsonResponse({'has_new': has_new})

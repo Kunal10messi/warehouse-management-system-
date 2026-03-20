@@ -1,6 +1,6 @@
 from django.contrib import admin
 from django.urls import include, path
-from accounts.views import dashboard, root_redirect
+from accounts.views import dashboard, root_redirect, notification_check
 from django.contrib.auth import views as auth_views
 
 urlpatterns = [
@@ -21,4 +21,5 @@ urlpatterns = [
 
     # Django admin
     path('admin/', admin.site.urls),
+    path('api/notification-check/', notification_check, name='notification_check'),
 ]

@@ -2,6 +2,7 @@ from django.contrib.auth.decorators import login_required
 from django.shortcuts import render, redirect
 from datetime import date, timedelta
 from allocations.models import Assignment, DeviceRequest
+from inventory.models import Device
 
 
 @login_required
@@ -72,8 +73,12 @@ def employee_dashboard(request):
                     'type': 'due_soon'
                 })
 
+    available_count = Device.objects.filter(status='AVAILABLE').count()
+
     return render(request, 'employee/dashboard.html', {
-        'notifications': notifications
+        'notifications': notifications,
+        'assignments': assignments,
+        'available_count': available_count,
     })
 
 

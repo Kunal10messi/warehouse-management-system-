@@ -6,7 +6,7 @@
 
 {% block topbar_actions %}
     <a href="/admin-panel/users/" class="btn btn-ghost">
-        <svg viewBox="0 0 14 14"><path d="M9 11L4 7l5-4" stroke-linecap="round" stroke-linejoin="round"/></svg>
+        <svg width="16" height="16" viewBox="0 0 14 14"><path d="M9 11L4 7l5-4" stroke-linecap="round" stroke-linejoin="round"/></svg>
         Back to Employees
     </a>
 {% endblock %}
@@ -14,13 +14,35 @@
 {% block content %}
 
 <div class="form-card">
-    <h3>Add New Employee</h3>
+    <div class="form-card-header">
+        <div class="form-card-icon" style="background:var(--blue-bg);">
+            <svg width="16" height="16" viewBox="0 0 16 16" style="stroke:var(--blue);"><circle cx="8" cy="5" r="3"/><path d="M2 14c0-3.314 2.686-5 6-5s6 1.686 6 5"/><path d="M12 8v4M10 10h4" stroke-linecap="round"/></svg>
+        </div>
+        <div>
+            <h3 style="margin:0;">Add New Employee</h3>
+            <div style="font-size:12px; color:var(--text-secondary); margin-top:3px;">Create a new employee account</div>
+        </div>
+    </div>
 
     <form method="post">
         {% csrf_token %}
-        {{ form.as_p }}
+        {% for field in form %}
+        <div class="form-group">
+            <label for="{{ field.id_for_label }}">{{ field.label }}</label>
+            {{ field }}
+            {% if field.help_text %}
+            <div class="form-help">{{ field.help_text }}</div>
+            {% endif %}
+            {% for error in field.errors %}
+            <div class="form-error">{{ error }}</div>
+            {% endfor %}
+        </div>
+        {% endfor %}
         <div class="form-actions">
-            <button type="submit" class="btn btn-primary">Add Employee</button>
+            <button type="submit" class="btn btn-primary">
+                <svg width="16" height="16" viewBox="0 0 14 14"><path d="M7 2v10M2 7h10" stroke-linecap="round"/></svg>
+                Add Employee
+            </button>
             <a href="/admin-panel/users/" class="btn btn-ghost">Cancel</a>
         </div>
     </form>

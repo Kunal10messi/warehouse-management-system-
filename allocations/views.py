@@ -81,11 +81,14 @@ def request_device(request):
 
         return redirect('/')
 
-    device_types = Device.objects.values_list('device_type', flat=True).distinct()
+    device_types = Device.objects.filter(status='AVAILABLE').values_list('device_type', flat=True).distinct()
+    device_types = [t for t in device_types if t]  # remove empty strings
+    selected_device_id = request.GET.get('device')
 
     return render(request, 'allocations/request_device.html', {
         'devices': devices,
         'device_types': device_types,
         'selected_type': selected_type,
+        'selected_device_id': selected_device_id,
         'today': today,
     })

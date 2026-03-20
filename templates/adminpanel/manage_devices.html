@@ -6,7 +6,7 @@
 
 {% block topbar_actions %}
     <a href="/admin-panel/devices/add/" class="btn btn-primary">
-        <svg viewBox="0 0 14 14"><path d="M7 2v10M2 7h10" stroke-linecap="round"/></svg>
+        <svg width="16" height="16" viewBox="0 0 14 14"><path d="M7 2v10M2 7h10" stroke-linecap="round"/></svg>
         Add Device
     </a>
 {% endblock %}
@@ -16,13 +16,20 @@
 <div class="card">
     <div class="card-header">
         <div class="card-title">
-            <svg viewBox="0 0 16 16"><path d="M9 2L2 5.5V12l7 3.5 7-3.5V5.5L9 2z"/><path d="M2 5.5l7 3.5 7-3.5M9 9v6.5"/></svg>
+            <svg width="16" height="16" viewBox="0 0 16 16"><path d="M9 2L2 5.5V12l7 3.5 7-3.5V5.5L9 2z"/><path d="M2 5.5l7 3.5 7-3.5M9 9v6.5"/></svg>
             All Devices
         </div>
         <span class="text-muted" style="font-size:12px;">{{ devices|length }} total</span>
     </div>
+
+    <!-- Inline search filter -->
+    <div class="table-filter-bar">
+        <input type="text" id="deviceSearch" placeholder="Search by serial, type, brand, model…" oninput="filterTable(this.value)" autocomplete="off">
+        <svg width="16" height="16" viewBox="0 0 16 16" class="filter-icon"><circle cx="6.5" cy="6.5" r="4"/><path d="M10.5 10.5l3 3" stroke-linecap="round"/></svg>
+    </div>
+
     <div class="table-wrapper">
-        <table class="table">
+        <table class="table" id="devicesTable">
             <thead>
                 <tr>
                     <th>Serial Number</th>
@@ -52,18 +59,45 @@
                         {% endif %}
                     </td>
                     <td>
-                        <a href="/admin-panel/devices/edit/{{ device.id }}/" class="btn btn-secondary">Edit</a>
-                        <a href="/admin-panel/devices/delete/{{ device.id }}/" class="btn btn-danger">Delete</a>
+                        <div style="display:flex;gap:6px;">
+                            <a href="/admin-panel/devices/edit/{{ device.id }}/" class="btn btn-secondary btn-sm">
+                                <svg width="16" height="16" viewBox="0 0 12 12"><path d="M7 2l3 3-6 6H1V8L7 2z"/></svg>
+                                Edit
+                            </a>
+                            <a href="/admin-panel/devices/delete/{{ device.id }}/" class="btn btn-danger btn-sm" onclick="return confirm('Delete device {{ device.serial_number }}? This cannot be undone.')">
+                                <svg width="16" height="16" viewBox="0 0 12 12"><path d="M2 3h8M4 3V2h4v1M5 5v4M7 5v4M3 3l.5 7h5L9 3"/></svg>
+                                Delete
+                            </a>
+                        </div>
                     </td>
                 </tr>
                 {% empty %}
                 <tr>
-                    <td colspan="7" class="text-center text-muted" style="padding:32px;">No devices found.</td>
+                    <td colspan="7">
+                        <div class="empty-state">
+                            <div class="empty-icon">
+                                <svg width="16" height="16" viewBox="0 0 24 24"><path d="M12 3L4 7v6l8 4 8-4V7L12 3z"/><path d="M4 7l8 4 8-4M12 11v8"/></svg>
+                            </div>
+                            <div class="empty-title">No devices yet</div>
+                            <div class="empty-sub">Add your first device to get started.</div>
+                            <a href="/admin-panel/devices/add/" class="btn btn-primary" style="margin-top:12px;">Add Device</a>
+                        </div>
+                    </td>
                 </tr>
                 {% endfor %}
             </tbody>
         </table>
     </div>
 </div>
+
+<script>
+function filterTable(q) {
+    const rows = document.querySelectorAll('#devicesTable tbody tr');
+    const lq = q.toLowerCase();
+    rows.forEach(row => {
+        row.style.display = row.textContent.toLowerCase().includes(lq) ? '' : 'none';
+    });
+}
+</script>
 
 {% endblock %}

@@ -6,7 +6,7 @@
 
 {% block topbar_actions %}
     <a href="/admin-panel/users/" class="btn btn-ghost">
-        <svg viewBox="0 0 14 14"><path d="M9 11L4 7l5-4" stroke-linecap="round" stroke-linejoin="round"/></svg>
+        <svg width="16" height="16" viewBox="0 0 14 14"><path d="M9 11L4 7l5-4" stroke-linecap="round" stroke-linejoin="round"/></svg>
         Back to Employees
     </a>
 {% endblock %}
@@ -20,10 +20,22 @@
         <div class="profile-info">
             <div class="profile-name">{{ emp.username }}</div>
             <div class="profile-email">{{ emp.email }}</div>
+            <div style="margin-top:8px;">
+                {% if emp.role == 'ADMIN' %}
+                    <span class="badge badge-info">Admin</span>
+                {% else %}
+                    <span class="badge" style="background:var(--bg-elevated); color:var(--text-secondary);">Employee</span>
+                {% endif %}
+            </div>
         </div>
         <div class="profile-fine">
             <div class="profile-fine-label">Total Fine</div>
             <div class="profile-fine-value">₹{{ total_fine }}</div>
+            {% if total_fine and total_fine > 0 %}
+            <div style="font-size:11px; color:var(--text-muted); margin-top:3px;">Outstanding balance</div>
+            {% else %}
+            <div style="font-size:11px; color:var(--green); margin-top:3px;">No outstanding fines</div>
+            {% endif %}
         </div>
     </div>
 </div>
@@ -32,7 +44,7 @@
 <div class="card">
     <div class="card-header">
         <div class="card-title">
-            <svg viewBox="0 0 16 16"><rect x="2" y="3" width="12" height="10" rx="2"/><path d="M5 7h6M5 10h4" stroke-linecap="round"/></svg>
+            <svg width="16" height="16" viewBox="0 0 16 16"><rect x="2" y="3" width="12" height="10" rx="2"/><path d="M5 7h6M5 10h4" stroke-linecap="round"/></svg>
             Active Assignments
         </div>
         <span class="badge badge-success">{{ active_assignments|length }} active</span>
@@ -57,7 +69,11 @@
                 </tr>
                 {% empty %}
                 <tr>
-                    <td colspan="4" class="text-center text-muted" style="padding:24px;">No active devices assigned.</td>
+                    <td colspan="4">
+                        <div class="empty-state" style="padding:20px;">
+                            <div class="empty-title" style="font-size:13px;">No active devices assigned.</div>
+                        </div>
+                    </td>
                 </tr>
                 {% endfor %}
             </tbody>
@@ -69,9 +85,10 @@
 <div class="card">
     <div class="card-header">
         <div class="card-title">
-            <svg viewBox="0 0 16 16"><path d="M8 3v5l3 3"/><circle cx="8" cy="8" r="5"/></svg>
+            <svg width="16" height="16" viewBox="0 0 16 16"><path d="M8 3v5l3 3"/><circle cx="8" cy="8" r="5"/></svg>
             Assignment History
         </div>
+        <span class="text-muted" style="font-size:12px;">{{ assignments|length }} total</span>
     </div>
     <div class="table-wrapper">
         <table class="table">
@@ -93,10 +110,18 @@
                     <td class="num">{{ a.actual_return_date|default:"Not Returned" }}</td>
                     <td>
                         {% if a.fine_amount and a.fine_amount > 0 %}
-                            <span style="color:var(--amber); font-family:var(--font-mono); font-size:12px;">₹{{ a.fine_amount }}</span>
+                            <span style="color:var(--amber); font-family:var(--font-mono); font-size:12px; font-weight:600;">₹{{ a.fine_amount }}</span>
                         {% else %}
                             <span class="text-muted">—</span>
                         {% endif %}
+                    </td>
+                </tr>
+                {% empty %}
+                <tr>
+                    <td colspan="5">
+                        <div class="empty-state" style="padding:20px;">
+                            <div class="empty-title" style="font-size:13px;">No assignment history yet.</div>
+                        </div>
                     </td>
                 </tr>
                 {% endfor %}

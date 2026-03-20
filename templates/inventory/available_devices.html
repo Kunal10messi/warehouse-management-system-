@@ -4,25 +4,31 @@
 {% block page_title %}Available Devices{% endblock %}
 {% block nav_available %}active{% endblock %}
 
-{% block topbar_actions %}
+{% comment %} {% block topbar_actions %}
     <a href="/allocations/request/" class="btn btn-primary">
-        <svg viewBox="0 0 14 14"><path d="M7 2v10M2 7h10" stroke-linecap="round"/></svg>
+        <svg width="16" height="16" viewBox="0 0 14 14"><circle cx="7" cy="7" r="5"/><path d="M7 4v3l2 2" stroke-linecap="round"/></svg>
         Request a Device
     </a>
-{% endblock %}
+{% endblock %} {% endcomment %}
 
 {% block content %}
 
 <div class="card">
     <div class="card-header">
         <div class="card-title">
-            <svg viewBox="0 0 16 16"><path d="M9 2L2 5.5V12l7 3.5 7-3.5V5.5L9 2z"/><path d="M2 5.5l7 3.5 7-3.5M9 9v6.5"/></svg>
+            <svg width="16" height="16" viewBox="0 0 16 16"><path d="M9 2L2 5.5V12l7 3.5 7-3.5V5.5L9 2z"/><path d="M2 5.5l7 3.5 7-3.5M9 9v6.5"/></svg>
             Available Devices
         </div>
         <span class="badge badge-available">{{ devices|length }} available</span>
     </div>
+
+    <div class="table-filter-bar">
+        <input type="text" id="deviceSearch" placeholder="Search by serial, type, brand, model…" oninput="filterTable(this.value)" autocomplete="off">
+        <svg width="16" height="16" viewBox="0 0 16 16" class="filter-icon"><circle cx="6.5" cy="6.5" r="4"/><path d="M10.5 10.5l3 3" stroke-linecap="round"/></svg>
+    </div>
+
     <div class="table-wrapper">
-        <table class="table">
+        <table class="table" id="devicesTable">
             <thead>
                 <tr>
                     <th>Serial Number</th>
@@ -31,6 +37,7 @@
                     <th>Model</th>
                     <th>Configuration</th>
                     <th>Location</th>
+                    <th>Action</th>
                 </tr>
             </thead>
             <tbody>
@@ -42,15 +49,39 @@
                     <td>{{ device.model }}</td>
                     <td style="color:var(--text-secondary);">{{ device.configuration }}</td>
                     <td style="color:var(--text-secondary);">{{ device.location }}</td>
+                    <td>
+                        <a href="/allocations/request/?device={{ device.id }}" class="btn btn-success btn-sm">
+                            <svg width="16" height="16" viewBox="0 0 12 12"><circle cx="6" cy="6" r="4"/><path d="M6 4v2l1.5 1.5" stroke-linecap="round"/></svg>
+                            Request
+                        </a>
+                    </td>
                 </tr>
                 {% empty %}
                 <tr>
-                    <td colspan="6" class="text-center text-muted" style="padding:32px;">No devices available at this time.</td>
+                    <td colspan="7">
+                        <div class="empty-state">
+                            <div class="empty-icon">
+                                <svg width="16" height="16" viewBox="0 0 24 24"><path d="M12 3L4 7v6l8 4 8-4V7L12 3z"/><path d="M4 7l8 4 8-4M12 11v8"/></svg>
+                            </div>
+                            <div class="empty-title">No devices available</div>
+                            <div class="empty-sub">All devices are currently assigned or under maintenance.</div>
+                        </div>
+                    </td>
                 </tr>
                 {% endfor %}
             </tbody>
         </table>
     </div>
 </div>
+
+<script>
+function filterTable(q) {
+    const rows = document.querySelectorAll('#devicesTable tbody tr');
+    const lq = q.toLowerCase();
+    rows.forEach(row => {
+        row.style.display = row.textContent.toLowerCase().includes(lq) ? '' : 'none';
+    });
+}
+</script>
 
 {% endblock %}

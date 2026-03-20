@@ -11,36 +11,93 @@
 <body>
 
 <div class="login-page">
-    <div class="login-card">
 
-        <div class="login-logo">
-            <div class="login-logo-icon">
-                <svg viewBox="0 0 18 18"><path d="M9 2L2 5.5V12l7 3.5 7-3.5V5.5L9 2z"/><path d="M2 5.5l7 3.5 7-3.5M9 9v6.5"/></svg>
+    <!-- Left panel (decorative, visible on wider screens) -->
+    <div class="login-panel-left">
+        <div class="login-panel-content">
+            <div class="login-panel-logo">
+                <img src="{% static 'images/nvidia-logo.png' %}" alt="NVIDIA" style="height:40px; filter:brightness(0) invert(1); opacity:0.9;">
             </div>
-            <div>
-                <div class="login-logo-name">NVIDIA</div>
-                <div class="login-logo-sub">Inventory</div>
+            <div class="login-panel-tagline">Warehouse Management System</div>
+            <div class="login-panel-sub">Manage device inventory, allocations, and employee access from a single dashboard.</div>
+            <div class="login-panel-stats">
+                <div class="lp-stat">
+                    <div class="lp-stat-icon">
+                        <svg width="16" height="16" viewBox="0 0 16 16"><path d="M9 2L2 5.5V12l7 3.5 7-3.5V5.5L9 2z"/><path d="M2 5.5l7 3.5 7-3.5M9 9v6.5"/></svg>
+                    </div>
+                    <div>
+                        <div class="lp-stat-label">Device Tracking</div>
+                        <div class="lp-stat-desc">Real-time inventory status</div>
+                    </div>
+                </div>
+                <div class="lp-stat">
+                    <div class="lp-stat-icon">
+                        <svg width="16" height="16" viewBox="0 0 16 16"><circle cx="8" cy="5" r="3"/><path d="M2 14c0-3.314 2.686-5 6-5s6 1.686 6 5"/></svg>
+                    </div>
+                    <div>
+                        <div class="lp-stat-label">Role-Based Access</div>
+                        <div class="lp-stat-desc">Admin and employee portals</div>
+                    </div>
+                </div>
+                <div class="lp-stat">
+                    <div class="lp-stat-icon">
+                        <svg width="16" height="16" viewBox="0 0 16 16"><rect x="2" y="3" width="12" height="10" rx="2"/><path d="M5 7h6M5 10h4"/></svg>
+                    </div>
+                    <div>
+                        <div class="lp-stat-label">Assignment History</div>
+                        <div class="lp-stat-desc">Full audit trail & fine tracking</div>
+                    </div>
+                </div>
             </div>
         </div>
-
-        <div class="login-title">Welcome back</div>
-        <div class="login-sub">Sign in to access the warehouse portal.</div>
-
-        {% if messages %}
-            {% for message in messages %}
-            <div class="alert alert-{% if message.tags == 'error' %}danger{% else %}{{ message.tags }}{% endif %}" style="margin-bottom:16px;">
-                {{ message }}
-            </div>
-            {% endfor %}
-        {% endif %}
-
-        <form method="post">
-            {% csrf_token %}
-            {{ form.as_p }}
-            <button type="submit" class="btn btn-primary">Sign In</button>
-        </form>
-
     </div>
+
+    <!-- Right panel: login form -->
+    <div class="login-panel-right">
+        <div class="login-card">
+
+            <div class="login-logo">
+                <div class="login-logo-icon">
+                    <svg width="16" height="16" viewBox="0 0 18 18"><path d="M9 2L2 5.5V12l7 3.5 7-3.5V5.5L9 2z"/><path d="M2 5.5l7 3.5 7-3.5M9 9v6.5"/></svg>
+                </div>
+                <div>
+                    <div class="login-logo-name">NVIDIA</div>
+                    <div class="login-logo-sub">Inventory Portal</div>
+                </div>
+            </div>
+
+            <div class="login-title">Welcome back</div>
+            <div class="login-sub">Sign in to access the warehouse portal.</div>
+
+            {% if messages %}
+                {% for message in messages %}
+                <div class="alert alert-{% if message.tags == 'error' %}danger{% else %}{{ message.tags }}{% endif %}" style="margin-bottom:16px;">
+                    <svg viewBox="0 0 16 16" style="width:14px;height:14px;stroke:currentColor;fill:none;stroke-width:2;flex-shrink:0;"><circle cx="8" cy="8" r="6"/><path d="M8 5v3M8 10v1" stroke-linecap="round"/></svg>
+                    {{ message }}
+                </div>
+                {% endfor %}
+            {% endif %}
+
+            <form method="post">
+                {% csrf_token %}
+                {% for field in form %}
+                <div class="form-group">
+                    <label for="{{ field.id_for_label }}">{{ field.label }}</label>
+                    {{ field }}
+                    {% for error in field.errors %}
+                    <div class="form-error">{{ error }}</div>
+                    {% endfor %}
+                </div>
+                {% endfor %}
+                <button type="submit" class="btn btn-primary" style="width:100%; margin-top:20px; padding:10px; font-size:14px; justify-content:center;">
+                    Sign In
+                    <svg viewBox="0 0 14 14" style="width:13px;height:13px;"><path d="M3 7h8M8 4l3 3-3 3" stroke-linecap="round" stroke-linejoin="round"/></svg>
+                </button>
+            </form>
+
+        </div>
+    </div>
+
 </div>
 
 <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.2/js/bootstrap.bundle.min.js"></script>

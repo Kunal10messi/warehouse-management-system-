@@ -1,15 +1,15 @@
 {% extends 'base.html' %}
 
 {% block title %}My Devices{% endblock %}
-{% block page_title %}My Assigned Devices{% endblock %}
+{% block page_title %}My Devices{% endblock %}
 {% block nav_my_devices %}active{% endblock %}
 
-{% block topbar_actions %}
+{% comment %} {% block topbar_actions %}
     <a href="/allocations/request/" class="btn btn-primary">
-        <svg viewBox="0 0 14 14"><path d="M7 2v10M2 7h10" stroke-linecap="round"/></svg>
+        <svg width="16" height="16" viewBox="0 0 14 14"><path d="M7 2v10M2 7h10" stroke-linecap="round"/></svg>
         Request a Device
     </a>
-{% endblock %}
+{% endblock %} {% endcomment %}
 
 {% block content %}
 
@@ -17,8 +17,8 @@
 <div class="card">
     <div class="card-header">
         <div class="card-title">
-            <svg viewBox="0 0 16 16"><rect x="2" y="3" width="12" height="10" rx="2"/><path d="M5 7h6M5 10h4" stroke-linecap="round"/></svg>
-            Devices Assigned to Me
+            <svg width="16" height="16" viewBox="0 0 16 16"><rect x="2" y="3" width="12" height="10" rx="2"/><path d="M5 7h6M5 10h4" stroke-linecap="round"/></svg>
+            Currently Assigned to Me
         </div>
         <span class="badge badge-assigned">{{ assignments|length }} assigned</span>
     </div>
@@ -28,6 +28,7 @@
                 <tr>
                     <th>Serial Number</th>
                     <th>Device Type</th>
+                    <th>Brand / Model</th>
                     <th>Issue Date</th>
                     <th>Return By</th>
                     <th>Action</th>
@@ -38,15 +39,30 @@
                 <tr>
                     <td><span class="num">{{ assignment.device.serial_number }}</span></td>
                     <td>{{ assignment.device.device_type }}</td>
+                    <td style="color:var(--text-secondary);">{{ assignment.device.brand }} {{ assignment.device.model }}</td>
                     <td class="num">{{ assignment.issue_date }}</td>
                     <td class="num">{{ assignment.expected_return_date }}</td>
                     <td>
-                        <a href="/allocations/return/{{ assignment.id }}/" class="btn btn-danger">Return Device</a>
+                        <a href="/allocations/return/{{ assignment.id }}/"
+                           class="btn btn-danger btn-sm"
+                           onclick="return confirm('Return {{ assignment.device.serial_number }}? This action cannot be undone.')">
+                            <svg width="16" height="16" viewBox="0 0 12 12"><path d="M2 6h8M6 2l-4 4 4 4" stroke-linecap="round" stroke-linejoin="round"/></svg>
+                            Return
+                        </a>
                     </td>
                 </tr>
                 {% empty %}
                 <tr>
-                    <td colspan="5" class="text-center text-muted" style="padding:32px;">You have no devices assigned to you.</td>
+                    <td colspan="6">
+                        <div class="empty-state">
+                            <div class="empty-icon">
+                                <svg width="16" height="16" viewBox="0 0 24 24"><rect x="3" y="4" width="18" height="14" rx="3"/><path d="M7 10h10M7 14h6"/></svg>
+                            </div>
+                            <div class="empty-title">No devices assigned</div>
+                            <div class="empty-sub">You have no devices currently assigned to you.</div>
+                            <a href="/allocations/request/" class="btn btn-primary" style="margin-top:12px;">Request a Device</a>
+                        </div>
+                    </td>
                 </tr>
                 {% endfor %}
             </tbody>
@@ -55,13 +71,13 @@
 </div>
 
 <!-- Assignment history -->
-<div class="card" style="margin-top:24px;">
+<div class="card">
     <div class="card-header">
         <div class="card-title">
-            <svg viewBox="0 0 16 16"><circle cx="8" cy="8" r="6"/><path d="M8 5v3.5l2.5 1.5" stroke-linecap="round"/></svg>
-            Assignment History
+            <svg width="16" height="16" viewBox="0 0 16 16"><circle cx="8" cy="8" r="6"/><path d="M8 5v3.5l2.5 1.5" stroke-linecap="round"/></svg>
+            Return History
         </div>
-        <span class="badge badge-assigned">{{ history|length }} returned</span>
+        <span class="text-muted" style="font-size:12px;">{{ history|length }} returned</span>
     </div>
     <div class="table-wrapper">
         <table class="table">
@@ -69,8 +85,8 @@
                 <tr>
                     <th>Serial Number</th>
                     <th>Device Type</th>
-                    <th>Issue Date</th>
-                    <th>Return By</th>
+                    <th>Issued</th>
+                    <th>Was Due</th>
                     <th>Returned On</th>
                     <th>Fine</th>
                 </tr>
@@ -83,31 +99,33 @@
                     <td class="num">{{ a.issue_date }}</td>
                     <td class="num">{{ a.expected_return_date }}</td>
                     <td class="num">{{ a.actual_return_date }}</td>
-                    <td class="num">
+                    <td>
                         {% if a.fine_amount %}
-                            <span style="color:var(--danger);">₹{{ a.fine_amount }}</span>
+                            <span style="color:var(--danger); font-family:var(--font-mono); font-size:12px; font-weight:600;">₹{{ a.fine_amount }}</span>
                         {% else %}
-                            <span style="color:var(--text-muted);">—</span>
+                            <span style="color:var(--green); font-size:12px;">✓ No fine</span>
                         {% endif %}
                     </td>
                 </tr>
                 {% empty %}
                 <tr>
-                    <td colspan="6" class="text-center text-muted" style="padding:32px;">No return history yet.</td>
+                    <td colspan="6">
+                        <div class="empty-state" style="padding:24px 0;">
+                            <div class="empty-title" style="font-size:13px;">No return history yet.</div>
+                        </div>
+                    </td>
                 </tr>
                 {% endfor %}
             </tbody>
         </table>
     </div>
 
-    <!-- Total fine -->
     {% if total_fine %}
-    <div style="display:flex; justify-content:flex-end; align-items:center; padding:16px 20px; border-top:1px solid var(--border); gap:12px;">
-        <span style="color:var(--text-muted); font-size:14px;">Total fine accumulated</span>
-        <span style="font-weight:600; font-size:16px; color:var(--danger);">₹{{ total_fine }}</span>
+    <div class="card-footer-total">
+        <span class="total-label">Total fine accumulated</span>
+        <span class="total-value" style="color:var(--danger);">₹{{ total_fine }}</span>
     </div>
     {% endif %}
-
 </div>
 
 {% endblock %}

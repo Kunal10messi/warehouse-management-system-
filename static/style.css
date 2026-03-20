@@ -539,3 +539,241 @@ h4 { font-size: 15px; } h5 { font-size: 13px; }
   .topbar-title { font-size: 14px; }
   /* Hide some table columns on very small screens via d-none helper applied in template */
 }
+
+/* ===== ADDITIONS — appended, no existing rules touched ===== */
+
+/* Alert close button */
+.alert-close-btn {
+  background: none; border: none; cursor: pointer;
+  color: currentColor; opacity: 0.5; padding: 2px; margin-left: auto;
+  display: flex; align-items: center; flex-shrink: 0;
+  transition: opacity 0.12s;
+}
+.alert-close-btn:hover { opacity: 1; }
+
+/* Small button variant */
+.btn-sm {
+  padding: 5px 10px;
+  font-size: 12px;
+}
+.btn-sm svg { width: 11px; height: 11px; }
+
+/* Topbar title group */
+.topbar-title-group { display: flex; flex-direction: column; justify-content: center; }
+
+/* Stat card icon */
+.stat-card-icon {
+  width: 32px; height: 32px; border-radius: var(--radius-sm);
+  display: flex; align-items: center; justify-content: center;
+  margin-bottom: 12px; flex-shrink: 0;
+}
+.stat-card-icon svg {
+  width: 16px; height: 16px;
+  fill: none; stroke-width: 1.5; flex-shrink: 0;
+}
+.stat-hint {
+  font-size: 11px; color: var(--text-muted);
+  margin-top: 4px;
+}
+
+/* Row danger (softer than table-danger) */
+.row-danger td { background: rgba(255,107,107,0.04) !important; }
+
+/* Mini avatar (inline in tables) */
+.mini-avatar {
+  width: 26px; height: 26px; border-radius: 50%;
+  background: var(--bg-elevated); color: var(--accent);
+  font-size: 10px; font-weight: 600;
+  display: inline-flex; align-items: center; justify-content: center;
+  flex-shrink: 0;
+}
+
+/* Table filter bar */
+.table-filter-bar {
+  padding: 10px 16px;
+  border-bottom: 1px solid var(--border);
+  display: flex; align-items: center; gap: 8px;
+  position: relative;
+}
+.table-filter-bar input {
+  border: none; background: transparent;
+  font-size: 13px; color: var(--text-primary);
+  width: 100%; padding: 4px 0 4px 24px; margin: 0;
+  box-shadow: none !important;
+}
+.table-filter-bar input:focus { outline: none; border: none; box-shadow: none !important; }
+.table-filter-bar input::placeholder { color: var(--text-muted); }
+.filter-icon {
+  position: absolute; left: 20px;
+  width: 13px; height: 13px;
+  stroke: var(--text-muted); fill: none; stroke-width: 1.5;
+  pointer-events: none;
+}
+
+/* Empty state */
+.empty-state {
+  padding: 36px 20px;
+  display: flex; flex-direction: column; align-items: center;
+  text-align: center; gap: 6px;
+}
+.empty-icon {
+  width: 44px; height: 44px;
+  background: var(--bg-elevated); border-radius: 50%;
+  display: flex; align-items: center; justify-content: center;
+  margin-bottom: 8px;
+}
+.empty-icon svg {
+  width: 22px; height: 22px;
+  stroke: var(--text-muted); fill: none; stroke-width: 1.5;
+}
+.empty-title { font-size: 14px; font-weight: 500; color: var(--text-primary); }
+.empty-sub   { font-size: 12px; color: var(--text-muted); max-width: 280px; }
+
+/* Form card header (icon + title row) */
+.form-card-header {
+  display: flex; align-items: center; gap: 14px;
+  margin-bottom: 24px; padding-bottom: 20px;
+  border-bottom: 1px solid var(--border);
+}
+.form-card-header h3 { margin: 0; font-size: 16px; }
+.form-card-icon {
+  width: 38px; height: 38px; border-radius: var(--radius-md);
+  display: flex; align-items: center; justify-content: center; flex-shrink: 0;
+}
+.form-card-icon svg {
+  width: 18px; height: 18px;
+  fill: none; stroke-width: 1.5;
+}
+
+/* Two-column form row */
+.form-row-2 {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 16px;
+}
+
+/* Form section label (step indicator) */
+.form-section-label {
+  font-size: 11px; font-weight: 600; color: var(--accent);
+  text-transform: uppercase; letter-spacing: 0.7px;
+  margin: 20px 0 10px;
+}
+.form-section-label:first-of-type { margin-top: 0; }
+
+/* Form divider */
+.form-divider {
+  border: none; border-top: 1px solid var(--border);
+  margin: 20px 0;
+}
+
+/* Form help text & error */
+.form-help  { font-size: 11px; color: var(--text-muted); margin-top: 4px; }
+.form-error { font-size: 11px; color: var(--danger); margin-top: 4px; }
+
+/* Card footer total row */
+.card-footer-total {
+  display: flex; justify-content: flex-end; align-items: center;
+  padding: 14px 20px; gap: 14px;
+  border-top: 1px solid var(--border);
+}
+.total-label { font-size: 13px; color: var(--text-muted); }
+.total-value { font-size: 16px; font-weight: 600; font-family: var(--font-mono); }
+
+/* Quick actions grid (employee dashboard) */
+.quick-actions-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+  gap: 1px;
+  background: var(--border);
+}
+.quick-action-card {
+  background: var(--bg-surface);
+  padding: 20px;
+  display: flex; flex-direction: column; gap: 6px;
+  text-decoration: none; position: relative;
+  transition: background 0.12s;
+}
+.quick-action-card:hover { background: var(--bg-hover); text-decoration: none; }
+.qa-icon {
+  width: 36px; height: 36px; border-radius: var(--radius-md);
+  display: flex; align-items: center; justify-content: center;
+  margin-bottom: 4px;
+}
+.qa-icon svg { width: 18px; height: 18px; fill: none; stroke-width: 1.5; }
+.qa-label { font-size: 14px; font-weight: 600; color: var(--text-heading); }
+.qa-desc  { font-size: 12px; color: var(--text-secondary); }
+.qa-arrow {
+  position: absolute; top: 20px; right: 20px;
+  color: var(--text-muted); transition: color 0.12s, transform 0.12s;
+}
+.qa-arrow svg { width: 14px; height: 14px; stroke: currentColor; fill: none; stroke-width: 1.8; }
+.quick-action-card:hover .qa-arrow { color: var(--accent); transform: translateX(2px); }
+
+/* ===== Login split-panel layout ===== */
+.login-page {
+  min-height: 100vh;
+  display: flex;
+  background: var(--bg-base);
+}
+
+/* Overrides the single-panel login-page layout from base */
+.login-panel-left {
+  flex: 1;
+  background: linear-gradient(160deg, #1a1f2e 0%, #0f1117 100%);
+  border-right: 1px solid var(--border);
+  display: flex; align-items: center; justify-content: center;
+  padding: 48px 40px;
+}
+.login-panel-right {
+  width: 420px; flex-shrink: 0;
+  display: flex; align-items: center; justify-content: center;
+  padding: 40px 32px;
+}
+.login-panel-content { max-width: 380px; }
+.login-panel-logo { margin-bottom: 32px; }
+.login-panel-tagline {
+  font-size: 24px; font-weight: 700; color: var(--text-heading);
+  line-height: 1.3; margin-bottom: 12px;
+}
+.login-panel-sub {
+  font-size: 14px; color: var(--text-secondary);
+  line-height: 1.6; margin-bottom: 36px;
+}
+.login-panel-stats { display: flex; flex-direction: column; gap: 20px; }
+.lp-stat { display: flex; align-items: flex-start; gap: 14px; }
+.lp-stat-icon {
+  width: 36px; height: 36px; border-radius: var(--radius-sm);
+  background: rgba(118,185,0,0.1);
+  display: flex; align-items: center; justify-content: center; flex-shrink: 0;
+}
+.lp-stat-icon svg { width: 16px; height: 16px; stroke: var(--accent); fill: none; stroke-width: 1.5; }
+.lp-stat-label { font-size: 13px; font-weight: 600; color: var(--text-primary); }
+.lp-stat-desc  { font-size: 12px; color: var(--text-muted); margin-top: 2px; }
+
+/* Override old login-card to work inside the new panel */
+.login-panel-right .login-card {
+  background: transparent;
+  border: none;
+  padding: 0;
+  width: 100%; max-width: 360px;
+}
+
+/* Hide panel-left below 860px, center card */
+@media (max-width: 860px) {
+  .login-panel-left  { display: none; }
+  .login-panel-right { width: 100%; padding: 24px; }
+  .login-panel-right .login-card {
+    background: var(--bg-surface);
+    border: 1px solid var(--border);
+    border-radius: var(--radius-lg);
+    padding: 32px 28px;
+    max-width: 420px;
+    margin: 0 auto;
+  }
+}
+
+/* form-row-2 collapses to single column on mobile */
+@media (max-width: 768px) {
+  .form-row-2 { grid-template-columns: 1fr; }
+  .quick-actions-grid { grid-template-columns: 1fr; }
+}

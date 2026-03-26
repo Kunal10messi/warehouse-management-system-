@@ -31,7 +31,8 @@
                     <th>Brand / Model</th>
                     <th>Issue Date</th>
                     <th>Return By</th>
-                    <th>Action</th>
+                    <th>Extend Return</th>
+                    <th>Return</th>
                 </tr>
             </thead>
             <tbody>
@@ -42,6 +43,17 @@
                     <td style="color:var(--text-secondary);">{{ assignment.device.brand }} {{ assignment.device.model }}</td>
                     <td class="num">{{ assignment.issue_date }}</td>
                     <td class="num">{{ assignment.expected_return_date }}</td>
+                    <td>
+                        {% comment %} <a href="{% url 'extend_date.html' %}" class="btn btn-primary">
+                            Extend Return Date
+                        </a> {% endcomment %}
+
+                       <a href="/allocations/extend/{{ assignment.id }}/"
+                            class="btn btn-danger btn-sm">
+                            <svg width="16" height="16" viewBox="0 0 12 12"><circle cx="6" cy="6" r="4"/><path d="M6 4v2l1.5 1.5" stroke-linecap="round"/></svg>
+                            Extend Date
+                        </a>
+                    </td>
                     <td>
                         <a href="/allocations/return/{{ assignment.id }}/"
                            class="btn btn-danger btn-sm"

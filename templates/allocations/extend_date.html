@@ -1,0 +1,53 @@
+{% extends 'base.html' %}
+
+{% comment %} {% block title %}Request a Device{% endblock %}
+{% block page_title %}Request a Device{% endblock %}
+{% block nav_request %}active{% endblock %} {% endcomment %}
+
+{% comment %} {% block topbar_actions %}
+    <a href="/allocations/my-devices/" class="btn btn-ghost">
+        <svg width="16" height="16" viewBox="0 0 14 14"><path d="M9 11L4 7l5-4" stroke-linecap="round" stroke-linejoin="round"/></svg>
+        My Devices
+    </a>
+{% endblock %} {% endcomment %}
+
+{% block content %}
+
+<div class="form-card" style="max-width:680px;">
+    <div class="form-card-header">
+        <div>
+            <h3 style="margin:0;">Extend Return Date</h3>
+            <div style="font-size:12px; color:var(--text-secondary); margin-top:3px;">return date cannot be extended for the devices that are already overdue</div>
+        </div>
+    </div>
+
+    <div class="form-divider"></div>
+
+    <form method="post">
+        {% csrf_token %}
+
+        <div class="form-group">
+            <div class="form-group">
+                <label>To Date</label>
+                <input type="date" name="new_date" required>
+            </div>
+        </div>
+
+        {% if error %}
+        <div class="alert alert-danger" style="margin-bottom:16px;">
+            <svg viewBox="0 0 16 16" style="width:14px;height:14px;stroke:currentColor;fill:none;stroke-width:2;flex-shrink:0;"><path d="M3 3l10 10M13 3L3 13" stroke-linecap="round"/></svg>
+            {{ error }}
+        </div>
+        {% endif %}
+
+        <div class="form-actions">
+            <button type="submit" class="btn btn-primary">
+                <svg width="16" height="16" viewBox="0 0 14 14"><path d="M7 2v10M2 7h10" stroke-linecap="round"/></svg>
+                Submit Request
+            </button>
+            <a href="/allocations/my-devices/" class="btn btn-ghost">Cancel</a>
+        </div>
+    </form>
+</div>
+
+{% endblock %}

@@ -4,7 +4,7 @@ from inventory.models import Device
 from .models import DeviceRequest
 from datetime import date
 from .models import Assignment
-from .services import return_device
+from .services import extend_date, return_device
 
 
 
@@ -34,6 +34,29 @@ def return_assigned_device(request, assignment_id):
     return_device(assignment)
     return redirect('/allocations/my-devices/')
 
+@login_required
+def extend_return_date(request, assignment_id):
+    assignment = Assignment.objects.get(id=assignment_id, user=request.user)
+    if request.method == 'POST':
+        new_date = date.fromisoformat(request.POST['new_date'])
+        today = date.today()
+
+        if assignment.expected_return_date < today:
+            return render(request, 'allocations/extend_date.html', {
+                'error': 'This device is overdue and cannot be extended.'
+            })
+
+        if new_date <= assignment.expected_return_date:
+            return render(request, 'allocations/extend_date.html', {
+                'error': 'New date must be after the current return date.'
+            })
+
+        extend_date(assignment, new_date)
+        return redirect('/allocations/my-devices/')
+
+    return render(request, 'allocations/extend_date.html', {
+        'assignment': assignment
+    })
 
 @login_required
 def request_device(request):

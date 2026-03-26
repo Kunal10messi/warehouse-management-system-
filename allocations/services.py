@@ -40,6 +40,10 @@ def approve_request(device_request):
 
     return assignment
 
+def extend_date(assignment, new_date):
+    today = date.today()
+    assignment.expected_return_date = new_date
+    assignment.save()
 
 def return_device(assignment):
     today = date.today()

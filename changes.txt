@@ -1,10 +1,11 @@
-
-request devices form and back button
-
-admin-panel/users/ shows list of user in random order, is should shown in ficed order, should also have a search button
-
-history of assigned devices for user not showing
-
-limit
+intoroduce assignment limit for each user? (only 1 cpu/gpu etc at a time can be assigned)
 
 if fine is getting calculated in service layer, why calculate fine again in allocations/models.py-> class Assignment(models.Model):
+
+
+using mixins rn, see were can i write custom code and why?
+
+
+    "fine_amount": "1100.00",
+    "fine": 1100.0,
+in api response for assignments, fine is shown two times. also there's inconsistency if a user is fined 400, scroll down and look u wont see that fine ammount maintained

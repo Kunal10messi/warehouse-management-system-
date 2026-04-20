@@ -31,7 +31,8 @@ INSTALLED_APPS = [
     'inventory',
     'allocations',
     'adminpanel',
-
+    'api',
+    'rest_framework',
 ]
 
 MIDDLEWARE = [

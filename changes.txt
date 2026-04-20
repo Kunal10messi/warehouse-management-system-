@@ -6,3 +6,5 @@ admin-panel/users/ shows list of user in random order, is should shown in ficed 
 history of assigned devices for user not showing
 
 limit
+
+if fine is getting calculated in service layer, why calculate fine again in allocations/models.py-> class Assignment(models.Model):

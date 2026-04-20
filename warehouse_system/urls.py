@@ -22,4 +22,7 @@ urlpatterns = [
     # Django admin
     path('admin/', admin.site.urls),
     path('api/notification-check/', notification_check, name='notification_check'),
+    
+    # API ENTRY POINT
+    path('api/v1/', include('api.urls')),
 ]

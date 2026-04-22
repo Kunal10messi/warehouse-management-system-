@@ -44,7 +44,7 @@ class AssignmentViewSet(mixins.ListModelMixin, mixins.RetrieveModelMixin, viewse
         print("DATA:", request.data)
         extend_date(assignment, new_date)
         return Response({"message": "Return date extended"}, status=status.HTTP_200_OK)
-    
+
     
 class DeviceRequestViewSet(mixins.ListModelMixin, mixins.RetrieveModelMixin, viewsets.GenericViewSet):
     queryset = DeviceRequest.objects.select_related('device','user')

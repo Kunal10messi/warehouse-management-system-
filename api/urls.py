@@ -9,3 +9,4 @@ router.register('requests', DeviceRequestViewSet, basename='request')
 
 
 urlpatterns = router.urls
+

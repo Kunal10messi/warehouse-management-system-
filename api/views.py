@@ -11,18 +11,25 @@ from allocations.models import DeviceRequest
 from .serializers import DeviceRequestSerializer
 from allocations.services import approve_request, return_device, extend_date
 from datetime import datetime
+from .permissions import IsAdminRole
 
 class DeviceViewSet(mixins.ListModelMixin, mixins.RetrieveModelMixin, viewsets.GenericViewSet):
     queryset = Device.objects.all()
     serializer_class = DeviceSerializer
     filter_backends = [DjangoFilterBackend]
-    filterset_fields = ['status', 'device_type']
+    filterset_fields = ['status', 'device_type']        
 
 class AssignmentViewSet(mixins.ListModelMixin, mixins.RetrieveModelMixin, viewsets.GenericViewSet):
     queryset = Assignment.objects.select_related('user', 'device')
     serializer_class = AssignmentSerializer
     filter_backends = [DjangoFilterBackend]
     filterset_fields = ['device', 'user']
+    
+    def get_queryset(self):
+        user = self.request.user
+        if user.role == 'ADMIN':
+            return Assignment.objects.select_related('user', 'device')
+        return Assignment.objects.select_related('user', 'device').filter(user=user)
     
     @action(detail=True, methods=['post'])
     def return_device(self, request, pk=None): 
@@ -50,7 +57,14 @@ class DeviceRequestViewSet(mixins.ListModelMixin, mixins.RetrieveModelMixin, vie
     queryset = DeviceRequest.objects.select_related('device','user')
     serializer_class = DeviceRequestSerializer
     
-    @action(detail=True, methods=['post'])
+    def get_queryset(self):
+        user = self.request.user
+        if user.role == 'ADMIN':
+            return DeviceRequest.objects.select_related('user', 'device')
+        return DeviceRequest.objects.select_related('user', 'device').filter(user = user)
+
+    
+    @action(detail=True, methods=['post'], permission_classes=[IsAdminRole])
     def approve(self, request, pk=None):
         device_request = self.get_object()
         approve_request(device_request)

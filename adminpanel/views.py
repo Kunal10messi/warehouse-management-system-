@@ -3,12 +3,17 @@ from django.shortcuts import render, redirect, get_object_or_404
 from django.contrib.auth import get_user_model
 from datetime import date
 from allocations.models import DeviceRequest, Assignment
-from allocations.services import approve_request
+from allocations.services import approve_request, reject_request
+from inventory.services import delete_device as delete_device_service
+from inventory.services import update_device as update_device_service
+from inventory.services import create_device as create_device_service
 from inventory.models import Device
 from .forms import EmployeeCreateForm
 from .forms import DeviceForm
 from .decorators import admin_required
 from django.contrib import messages
+from accounts.services import create_employee
+from django.core.exceptions import ValidationError
 
 User = get_user_model()
 
@@ -60,8 +65,11 @@ def approve_request_view(request, request_id):
 @admin_required
 def reject_request_view(request, request_id):
     req = get_object_or_404(DeviceRequest, id=request_id, status='PENDING')
-    req.status = 'REJECTED'
-    req.save()
+    try:
+        reject_request(req)
+        messages.success(request, "Request rejected.")
+    except ValueError as e:
+        messages.error(request, str(e))
     return redirect('/admin-panel/')
 
 @admin_required
@@ -100,8 +108,13 @@ def add_device(request):
         form = DeviceForm(request.POST)
 
         if form.is_valid():
-            form.save()
-            return redirect('/admin-panel/devices/')
+            try:
+                create_employee(form.clened_data)
+                messages.success(request, "Employee created successfully")
+                return redirect('admin_users')
+
+            except ValidationError as e:
+                messages.error(request, str(e))
     else:
         form = DeviceForm()
 
@@ -111,22 +124,34 @@ def add_device(request):
 @admin_required
 def edit_device(request, device_id):
     device = get_object_or_404(Device, id=device_id)
+
     if request.method == 'POST':
-        device.serial_number = request.POST['serial_number']
-        device.device_type = request.POST['device_type']
-        device.brand = request.POST['brand']
-        device.model = request.POST['model']
-        device.configuration = request.POST['configuration']
-        device.location = request.POST['location']
-        device.status = request.POST['status']
-        device.save()
+        data = {
+            'serial_number': request.POST.get('serial_number'),
+            'device_type': request.POST.get('device_type'),
+            'brand': request.POST.get('brand'),
+            'model': request.POST.get('model'),
+            'configuration': request.POST.get('configuration'),
+            'location': request.POST.get('location'),
+            'status': request.POST.get('status'),
+        }
+
+        update_device_service(device, data)
+
         return redirect('/admin-panel/devices/')
+
     return render(request, 'adminpanel/edit_device.html', {'device': device})
 
 @admin_required
 def delete_device(request, device_id):
     device = get_object_or_404(Device, id=device_id)
-    device.delete()
+
+    try:
+        delete_device_service(device)
+        messages.success(request, "Device deleted successfully")
+    except ValueError as e:
+        messages.error(request, str(e))
+
     return redirect('/admin-panel/devices/')
 
 @admin_required

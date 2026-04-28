@@ -1,3 +1,4 @@
+from datetime import timedelta
 import os
 import dj_database_url
 from pathlib import Path
@@ -143,6 +144,54 @@ REST_FRAMEWORK = {
         'rest_framework.permissions.IsAuthenticated',
     ],
     'DEFAULT_PAGINATION_CLASS': 'rest_framework.pagination.PageNumberPagination',
-    'PAGE_SIZE': 2,
+    'PAGE_SIZE': 5,
     'DEFAULT_FILTER_BACKENDS': ['django_filters.rest_framework.DjangoFilterBackend'],
+    'EXCEPTION_HANDLER': 'core.exceptions.custom_exception_handler',
+}
+
+SIMPLE_JWT = {
+    "ACCESS_TOKEN_LIFETIME": timedelta(minutes=10),
+    "REFRESH_TOKEN_LIFETIME": timedelta(days=1),
+    "ROTATE_REFRESH_TOKENS": True,
+    "BLACKLIST_AFTER_ROTATION": True,
+}
+
+LOGGING = {
+    'version': 1,
+    'disable_existing_loggers': False,
+
+    'formatters': {
+        'simple': {
+            'format': '[%(levelname)s] %(asctime)s - %(message)s',
+        },
+    },
+
+    'handlers': {
+        # For your app logs → file
+        'file': {
+            'class': 'logging.FileHandler',
+            'filename': 'app.log',
+            'formatter': 'simple',
+        },
+
+        # For Django (requests etc) → console
+        'console': {
+            'class': 'logging.StreamHandler',
+        },
+    },
+
+    # 🔥 YOUR logs → file only
+    'root': {
+        'handlers': ['file'],
+        'level': 'INFO',
+    },
+
+    # 🔥 Django logs → console only
+    'loggers': {
+        'django': {
+            'handlers': ['console'],
+            'level': 'INFO',
+            'propagate': False,
+        },
+    },
 }

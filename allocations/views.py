@@ -4,7 +4,7 @@ from inventory.models import Device
 from .models import DeviceRequest
 from datetime import date
 from .models import Assignment
-from .services import extend_date, return_device
+from .services import create_request, extend_date, return_device
 
 
 
@@ -37,21 +37,18 @@ def return_assigned_device(request, assignment_id):
 @login_required
 def extend_return_date(request, assignment_id):
     assignment = Assignment.objects.get(id=assignment_id, user=request.user)
+
     if request.method == 'POST':
-        new_date = date.fromisoformat(request.POST['new_date'])
-        today = date.today()
+        try:
+            new_date = date.fromisoformat(request.POST['new_date'])
+            extend_date(assignment, new_date)
 
-        if assignment.expected_return_date < today:
+        except ValueError as e:
             return render(request, 'allocations/extend_date.html', {
-                'error': 'This device is overdue and cannot be extended.'
+                'assignment': assignment,
+                'error': str(e)
             })
 
-        if new_date <= assignment.expected_return_date:
-            return render(request, 'allocations/extend_date.html', {
-                'error': 'New date must be after the current return date.'
-            })
-
-        extend_date(assignment, new_date)
         return redirect('/allocations/my-devices/')
 
     return render(request, 'allocations/extend_date.html', {
@@ -69,40 +66,27 @@ def request_device(request):
     today = date.today()
 
     if request.method == 'POST':
-        device_id = request.POST['device']
-        from_date = date.fromisoformat(request.POST['from_date'])
-        to_date = date.fromisoformat(request.POST['to_date'])
+        try:
+            device_id = request.POST['device']
+            from_date = date.fromisoformat(request.POST['from_date'])
+            to_date = date.fromisoformat(request.POST['to_date'])
 
-        # if from_date < today or to_date < today:
-        #     device_types = Device.objects.values_list('device_type', flat=True).distinct()
-        #     return render(request, 'allocations/request_device.html', {
-        #         'devices': devices,
-        #         'device_types': device_types,
-        #         'selected_type': selected_type,
-        #         'today': today,
-        #         'error': 'Dates cannot be in the past.'
-        #     })
+            device = Device.objects.get(id=device_id)
 
-        # if to_date < from_date:
-        #     device_types = Device.objects.values_list('device_type', flat=True).distinct()
-        #     return render(request, 'allocations/request_device.html', {
-        #         'devices': devices,
-        #         'device_types': device_types,
-        #         'selected_type': selected_type,
-        #         'today': today,
-        #         'error': 'To date cannot be before from date.'
-        #     })
+            create_request(request.user, device, from_date, to_date)
 
-        device = Device.objects.get(id=device_id)
+            return redirect('/')
 
-        DeviceRequest.objects.create(
-            user=request.user,
-            device=device,
-            from_date=from_date,
-            to_date=to_date
-        )
+        except ValueError as e:
+            device_types = Device.objects.values_list('device_type', flat=True).distinct()
 
-        return redirect('/')
+            return render(request, 'allocations/request_device.html', {
+                'devices': devices,
+                'device_types': device_types,
+                'selected_type': selected_type,
+                'today': today,
+                'error': str(e)
+            })
 
     device_types = Device.objects.filter(status='AVAILABLE').values_list('device_type', flat=True).distinct()
     device_types = [t for t in device_types if t]  # remove empty strings

@@ -1,8 +1,16 @@
+move users related business logic to accounts/services.py
+
+solve race condition by adding locks
+
+
 admins should not be able to change status of devices that are currently allocated.
+
 
 request date (from) should only be from today, if from date is in future, show error telling user u cannot reserve a device for future.
 
+
 intoroduce assignment limit for each user? (only 1 cpu/gpu etc at a time can be assigned)
+
 
 if fine is getting calculated in service layer, why calculate fine again in allocations/models.py-> class Assignment(models.Model):
 
@@ -13,3 +21,21 @@ using mixins rn, see were can i write custom code and why?
     "fine_amount": "1100.00",
     "fine": 1100.0,
 in api response for assignments, fine is shown two times. also there's inconsistency if a user is fined 400, scroll down and look u wont see that fine ammount maintained
+
+
+add auditing    
+
+
+API Endpoints:
+    USER:
+        GET /devices/ (show a list of all the devices) (done) 
+        GET /assignments/ (shows all assignments of logged in user) (done) 
+        POST /assignments/{id}/return/ (return an allocated device) (done) 
+        POST /assignments/{id}/extend/ (extend return date of allocated device)(done) 
+        GET /requests/ (shows all the requests logged in user has made till now, create request) (done)  
+    ADMIN:
+        GET /devices/ (show list of all the devices) (done)  
+        GET /users/ (show a list of all the users, details of particular user, create user) (done)  
+        GET /requests/ (shows list of all the requests made by every user) (done) 
+        POST /requests/{id}/approve/ (approve request made my any user) (done) 
+        POST /requests/{id}/reject/ (reject request made my any user) (done) 

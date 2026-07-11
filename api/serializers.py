@@ -58,9 +58,6 @@ class CreateUserSerializer(serializers.ModelSerializer):
     def validate_email(self, value):
         from accounts.models import User
 
-        if User.objects.filter(email__iexact=value).exists():
-            raise serializers.ValidationError("Email already exists")
-        return value
     class Meta:
         model = User
         fields = ['id', 'username', 'email', 'password', 'role']

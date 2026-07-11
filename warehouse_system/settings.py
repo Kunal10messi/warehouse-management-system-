@@ -167,7 +167,7 @@ LOGGING = {
     },
 
     'handlers': {
-        # For your app logs → file
+        
         'file': {
             'class': 'logging.FileHandler',
             'filename': 'app.log',
@@ -180,13 +180,13 @@ LOGGING = {
         },
     },
 
-    # 🔥 YOUR logs → file only
+    # logs 
     'root': {
         'handlers': ['file'],
         'level': 'INFO',
     },
 
-    # 🔥 Django logs → console only
+    # logs 
     'loggers': {
         'django': {
             'handlers': ['console'],

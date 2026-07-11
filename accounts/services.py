@@ -8,6 +8,10 @@ def create_employee(data):
     email = data.get('email')
 
     if User.objects.filter(email__iexact=email).exists():
+        logger.warning(
+            "User creation failed | email=%s already exists",
+            email,
+        )
         raise ValidationError("Email already exists")
 
     user = User(
@@ -17,17 +21,32 @@ def create_employee(data):
     )
     user.set_password(data['password'])
     user.save()
-    logger.info(f"User created: {user.id} ({user.username})")
+    logger.info(
+        "User created | user_id=%s username=%s role=%s",
+        user.id,
+        user.username,
+        user.role,
+    )
     return user
 
 def update_user(user, data):
     if 'email' in data:
         if User.objects.filter(email__iexact=data['email']).exclude(id=user.id).exists():
+            logger.warning(
+                "User update failed | user_id=%s duplicate_email=%s",
+                user.id,
+                data["email"],
+            )
             raise ValidationError("Email already exists")
         user.email = data['email']
 
     if 'username' in data:
         if User.objects.filter(username=data['username']).exclude(id=user.id).exists():
+            logger.warning(
+                "User update failed | user_id=%s duplicate_username=%s",
+                user.id,
+                data["username"],
+            )
             raise ValidationError("Username already exists")
         user.username = data['username']
 
@@ -39,7 +58,11 @@ def update_user(user, data):
         user.set_password(data['password'])
 
     user.save()
-    logger.info(f"User updated: {user.id}")
+    logger.info(
+        "User updated | user_id=%s username=%s",
+        user.id,
+        user.username,
+    )
     return user
 
 def delete_user(user):
@@ -49,6 +72,19 @@ def delete_user(user):
     ).exists()
 
     if active_assignment:
+        logger.warning(
+            "User deletion denied | user_id=%s username=%s active_assignment_exists",
+            user.id,
+            user.username,
+        )
         raise ValueError("Cannot delete user with active assignments")
-    logger.info(f"User deleted: {user.id}")
+    username = user.username
+    user_id = user.id
+
     user.delete()
+
+    logger.info(
+        "User deleted | user_id=%s username=%s",
+        user_id,
+        username,
+    )

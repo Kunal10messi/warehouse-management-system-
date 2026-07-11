@@ -150,7 +150,7 @@ class AssignmentViewSet(mixins.ListModelMixin, mixins.RetrieveModelMixin, viewse
         'device__device_type'
     ]
     ordering_fields = ['issue_date', 'expected_return_date']
-    ordering = ['-issue_date']
+    ordering = ['-issue_date', '-id']
     
     
     def get_queryset(self):

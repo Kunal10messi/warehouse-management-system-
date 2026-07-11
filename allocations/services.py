@@ -1,6 +1,8 @@
 from datetime import datetime, date
 from decimal import Decimal
 from allocations.models import Assignment, DeviceRequest
+from inventory.models import Device
+from django.db import transaction
 import logging
 logger = logging.getLogger(__name__)
 
@@ -44,57 +46,62 @@ def create_request(user, device, from_date, to_date):
 def approve_request(device_request):
     from .models import Assignment, DeviceRequest
 
-    device = device_request.device
-    user = device_request.user
+    with transaction.atomic():
 
-    existing_assignment = Assignment.objects.filter(
-        device=device,
-        actual_return_date__isnull=True
-    ).exists()
+        device = device_request.device
+        device = Device.objects.select_for_update().get(
+            id=device_request.device_id
+        )
+        user = device_request.user
 
-    if existing_assignment:
-        device_request.status = 'REJECTED'
-        device_request.save()
-        logger.warning(
-                "Approval failed | request_id=%s device=%s already assigned",
-                device_request.id,
-                device.serial_number,
-            )
-        raise ValueError("Device is already assigned to another user.")
+        existing_assignment = Assignment.objects.filter(
+            device=device,
+            actual_return_date__isnull=True
+        ).exists()
 
-    assignment = Assignment.objects.create(
-        user=user,
-        device=device,
-        expected_return_date=device_request.to_date
-    )
+        if existing_assignment:
+            device_request.status = 'REJECTED'
+            device_request.save()
+            logger.warning(
+                    "Approval failed | request_id=%s device=%s already assigned",
+                    device_request.id,
+                    device.serial_number,
+                )
+            raise ValueError("Device is already assigned to another user.")
 
-    device.status = 'ASSIGNED'
-    device.save()
-
-    device_request.status = 'APPROVED'
-    device_request.save()
-    logger.info(
-        "Request approved | request_id=%s user=%s device=%s assignment_id=%s",
-        device_request.id,
-        user.username,
-        device.serial_number,
-        assignment.id,
-    )
-    
-    # reject all other pending requests for this same device
-    rejected_count = DeviceRequest.objects.filter(
-        device=device,
-        status='PENDING'
-    ).exclude(id=device_request.id).update(status='REJECTED')
-
-    if rejected_count:
-        logger.info(
-            "Auto-rejected %s competing request(s) for device=%s",
-            rejected_count,
-            device.serial_number,
+        assignment = Assignment.objects.create(
+            user=user,
+            device=device,
+            expected_return_date=device_request.to_date
         )
 
-    return assignment
+        device.status = 'ASSIGNED'
+        device.save()
+
+        device_request.status = 'APPROVED'
+        device_request.save()
+        logger.info(
+            "Request approved | request_id=%s user=%s device=%s assignment_id=%s",
+            device_request.id,
+            user.username,
+            device.serial_number,
+            assignment.id,
+        )
+        
+        # reject all other pending requests for this same device
+        rejected_count = DeviceRequest.objects.filter(
+            device=device,
+            status='PENDING'
+        ).exclude(id=device_request.id).update(status='REJECTED')
+
+        if rejected_count:
+            logger.info(
+                "Auto-rejected %s competing request(s) for device=%s",
+                rejected_count,
+                device.serial_number,
+            )
+
+        return assignment
 
 def reject_request(device_request):
     if device_request.status != 'PENDING':
